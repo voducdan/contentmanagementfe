@@ -1,25 +1,24 @@
-import logo from './logo.svg';
 import './App.css';
 
+import Home from './components/Home/home';
+import Metadata from './components/Metadata/metadata';
+
+import { Routes, Route } from "react-router-dom";
+
+import { Layout } from 'antd';
+const { Header, Footer, Sider, Content } = Layout;
+
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <div className="App">
+            <Layout className='app-layout'>
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/metadata/:id" element={<Metadata />} />
+                </Routes>
+            </Layout>
+        </div>
+    );
 }
 
 export default App;
