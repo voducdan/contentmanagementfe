@@ -1,7 +1,7 @@
 import http from './axios';
 
-const getAll = () => {
-    return http.get("/statuses");
+const getAll = (tab) => {
+    return http.get(`/statuses?tab=${tab}`);
 };
 
 export default {

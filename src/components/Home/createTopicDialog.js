@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import TopicService from '../../services/topic.service';
 import './home.style.css';
 
@@ -14,7 +12,8 @@ import {
 const { Option } = Select;
 
 export default function CreateTopic(props) {
-    const { isModalVisible, setIsModalVisible } = props;
+    const { isModalVisible, setIsModalVisible, appendTopic } = props;
+    const [form] = Form.useForm();
 
     const handleOk = () => {
         setIsModalVisible(false);
@@ -27,7 +26,10 @@ export default function CreateTopic(props) {
     const onFinish = (values) => {
         TopicService.create(values)
             .then(res => {
+                const data = res.data;
+                appendTopic(data.data);
                 handleOk();
+                form.resetFields();
             })
             .catch(e => { console.log(e) })
 
@@ -47,6 +49,7 @@ export default function CreateTopic(props) {
         >
             <Form
                 name="createTopic"
+                form={form}
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}
                 onFinish={onFinish}

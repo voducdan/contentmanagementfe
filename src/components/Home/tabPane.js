@@ -3,43 +3,117 @@ import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import differenceInDays from 'date-fns/differenceInDays'
 
-import { DownOutlined } from '@ant-design/icons';
-
 import TopicService from '../../services/topic.service';
 import StatusService from '../../services/status.service';
+import TopicCancelService from '../../services/topicCancel.service';
 
 import CreateTopic from './createTopicDialog';
 
 import {
     Table,
     Button,
-    Menu,
-    Dropdown
+    Select,
+    Modal,
+    Form,
+    Input
 } from 'antd';
 
-const CopyrightTab = ({ data, statuses }) => {
+const { Option } = Select;
+
+const CopyrightTab = ({ data, statuses, setData }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [openReasonModal, setOpenReasonModal] = useState(false);
+    const [currentTopic, setCurrentTopic] = useState(null);
+    const [currentStatus, setCurrentStatus] = useState(null);
 
     const showModal = () => {
         setIsModalVisible(true);
     };
 
-    function handleMenuClick(e) {
-        console.log('Click on menu item.');
-        console.log('click', e);
+    const updateTopic = async (body) => {
+        const res = await TopicService.update(body);
+        const updatedTopic = await res.data.data;
+        const copyData = [...data];
+        const updatedTopicIdx = copyData.findIndex(i => i.id === updatedTopic.id);
+        updatedTopic['key'] = updatedTopic['id'];
+        copyData[updatedTopicIdx] = updatedTopic;
+        setData(copyData);
     }
 
-    const statusMenu = (
-        <Menu onClick={handleMenuClick}>
-            {
-                statuses.map(i => (
-                    <Menu.Item key={i.id} >
-                        {i.name}
-                    </Menu.Item>
-                ))
-            }
-        </Menu>
-    );
+    function handleMenuClick(e, id) {
+        const status = Number(e);
+        const topicUpdatedData = {
+            id,
+            last_modified_status: new Date()
+        };
+        if ([10, 11].includes(status)) {
+            // handle pop up to fill reason of canceling
+            setOpenReasonModal(true);
+            setCurrentTopic(id);
+            setCurrentStatus(status);
+        }
+        else if (status === 12) {
+            // handle pop up to fill topic detail
+        }
+        else {
+            // update topic status
+            topicUpdatedData['status_id'] = status;
+        }
+        updateTopic(topicUpdatedData);
+    }
+
+
+
+    const appendTopic = (topic) => {
+        topic['key'] = topic.id;
+        const copyData = [...data];
+        copyData.push(topic);
+        setData(copyData);
+    }
+
+    const handleCancelTopicOk = () => {
+
+    }
+
+    const handleCancelTopicFail = () => {
+
+    }
+
+    const StatusMenu = ({ translation, id, status }) => {
+        const filteredStatuses = translation === true ? statuses : statuses.filter(i => !(i.id === 8 || i.id === 9));
+        return (
+            <Select defaultValue={status} onChange={(e) => { handleMenuClick(e, id) }}>
+                {
+                    filteredStatuses.map(i => (
+                        <Option key={i.id} value={i.id}>{i.name}</Option>
+                    ))
+                }
+            </Select>
+        )
+    };
+
+
+    const onFinishFailed = (errorInfo) => {
+        console.log('Failed:', errorInfo);
+    };
+
+    const onFinish = async (values) => {
+        const body = values;
+        body['id_topic'] = currentTopic;
+        const topicUpdatedData = {
+            id: currentTopic,
+            status_id: currentStatus,
+            last_modified_status: new Date(),
+            completed_at: new Date()
+        };
+        await TopicCancelService.create(body);
+        updateTopic(topicUpdatedData);
+        setOpenReasonModal(false);
+    };
+
+    const handleCancel = () => {
+        setOpenReasonModal(false);
+    };
 
     const columns = [
         {
@@ -50,17 +124,14 @@ const CopyrightTab = ({ data, statuses }) => {
         {
             title: 'Trạng thái',
             key: 'status',
-            dataIndex: 'status',
-            render: status => (
-                <>
-                    <Dropdown overlay={statusMenu}>
-                        <Button>
-                            {status.name} <DownOutlined />
-                        </Button>
-                    </Dropdown>
-
-                </>
-            )
+            dataIndex: ['status', 'translation'],
+            render: (_, data) => {
+                return (
+                    <>
+                        <StatusMenu style={{ width: 'max-content' }} status={data.status.id} translation={data.translation} id={data.id} />
+                    </>
+                )
+            }
         },
         {
             title: 'Ngày tạo',
@@ -115,6 +186,37 @@ const CopyrightTab = ({ data, statuses }) => {
     ];
     return (
         <div>
+            <Modal
+                title="Lý do kết thúc đề tài"
+                visible={openReasonModal}
+                onOk={handleCancelTopicOk}
+                onCancel={handleCancelTopicFail}
+                footer={null}
+            >
+                <Form
+                    name="reasonOfCancelTopicForm"
+                    onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}
+                    autoComplete="off"
+                >
+                    <Form.Item
+                        name="reason"
+                        rules={[{ required: true, message: 'Vui lòng điền lý do kết thúc đề tài' }]}
+                    >
+                        <Input.TextArea />
+                    </Form.Item>
+                    <Button key="back" onClick={handleCancel}>
+                        Thoát
+                    </Button>,
+                    <Button
+                        key="submit"
+                        htmlType="submit"
+                        type="primary"
+                    >
+                        Lưu
+                    </Button>
+                </Form>
+            </Modal>
             <div className='create-topic-btn-container'>
                 <Button
                     onClick={showModal}
@@ -126,6 +228,7 @@ const CopyrightTab = ({ data, statuses }) => {
                 <CreateTopic
                     isModalVisible={isModalVisible}
                     setIsModalVisible={setIsModalVisible}
+                    appendTopic={appendTopic}
                 />
                 <Table columns={columns} dataSource={data} />
             </div>
@@ -148,7 +251,7 @@ export default function TabPaneContent({ tab }) {
             setTopic(dataWithKey);
         };
         const fetchStatuses = async () => {
-            const res = await StatusService.getAll();
+            const res = await StatusService.getAll(1);
             const data = await res.data.data;
             setStatuses(data);
         };
@@ -160,7 +263,7 @@ export default function TabPaneContent({ tab }) {
     switch (tab) {
         case '1':
             return (
-                <CopyrightTab data={topics} statuses={statuses} />
+                <CopyrightTab data={topics} statuses={statuses} setData={setTopic} />
             )
     }
 }
