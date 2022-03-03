@@ -4,8 +4,11 @@ const create = data => {
     return http.post("/topics", data);
 };
 
-const getAll = () => {
-    return http.get("/topics");
+const getAll = (tab) => {
+    return http.get(`/topics?tab=${tab}`);
+};
+const getOne = (id) => {
+    return http.get(`/topics/${id}`);
 };
 
 const update = (data) => {
@@ -15,5 +18,6 @@ const update = (data) => {
 export default {
     create,
     getAll,
-    update
+    update,
+    getOne
 };

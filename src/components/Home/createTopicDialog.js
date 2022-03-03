@@ -24,6 +24,8 @@ export default function CreateTopic(props) {
     };
 
     const onFinish = (values) => {
+        values['tab'] = 1;
+        values['status_id'] = 1;
         TopicService.create(values)
             .then(res => {
                 const data = res.data;
@@ -58,20 +60,20 @@ export default function CreateTopic(props) {
             >
                 <Form.Item
                     label="Tên gốc"
-                    name="originalName"
+                    name="original_name"
                 >
                     <Input />
                 </Form.Item>
                 <Form.Item
                     label="Tên tiếng việt"
-                    name="viName"
+                    name="vi_name"
                 >
                     <Input />
                 </Form.Item>
 
                 <Form.Item
                     label="Tít phụ"
-                    name="shortDescription"
+                    name="short_description"
                     rules={[{ required: true, message: 'Vui lòng điền tích phụ' }]}
                 >
                     <Input.TextArea />
@@ -84,7 +86,7 @@ export default function CreateTopic(props) {
                 </Form.Item>
                 <Form.Item
                     label="Đơn vị uỷ thác bản quyền"
-                    name="copyrightTrustee"
+                    name="copyright_trustee"
                 >
                     <Input />
                 </Form.Item>

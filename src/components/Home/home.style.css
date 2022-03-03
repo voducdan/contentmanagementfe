@@ -2,5 +2,5 @@
     text-align: left;
 }
 .ant-form-item-label {
-    text-align: left;
+    white-space: normal!important;
 }
