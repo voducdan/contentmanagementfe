@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 
 import TopicService from '../../services/topic.service';
 import CategoryService from '../../services/category.service';
+import TokenService from '../../services/token.service';
 
 import {
     Form,
@@ -28,6 +29,8 @@ export default function Metadata() {
     const [updateTopicMetaErr, setUpdateTopicMetaErr] = useState(false);
     const { id } = useParams();
 
+    const [topicMetaForm] = Form.useForm();
+
     useEffect(() => {
         async function fetchTopic(id) {
             const res = await TopicService.getOne(id);
@@ -38,27 +41,38 @@ export default function Metadata() {
             }
             setTopic(data);
         }
+        if (!TokenService.getToken()) {
+            window.location.href = '/login'
+        }
         if (id) {
             fetchTopic(id);
         }
     }, [id]);
 
     useEffect(() => {
-        const getCategories = async (parentId = null) => {
-            const res = await CategoryService.getAll(parentId);
-            const categories = await res.data.data;
-            if (parentId) {
-                setCategoriesLevel2(categories);
-            }
-            else {
-                setCategoriesLevel1(categories);
-            }
-        }
         if (topic && topic.tab >= 2) {
             getCategories();
             getCategories(topic.category_level_1);
         }
     }, [topic]);
+
+    const getCategories = async (parentId = null) => {
+        const res = await CategoryService.getAll(parentId);
+        const categories = await res.data.data;
+        if (parentId) {
+            setCategoriesLevel2(categories);
+        }
+        else {
+            setCategoriesLevel1(categories);
+        }
+    }
+
+    const handleSelectCategoryLevel1 = async (e) => {
+        getCategories(e);
+        topicMetaForm.setFieldsValue({
+            category_level_2: null
+        })
+    }
 
     const onFinish = async (values) => {
         try {
@@ -67,7 +81,7 @@ export default function Metadata() {
                 formData.append("coverImg", values.coverImg.file);
             }
             formData.append("id", topic['id']);
-            formData.append("translation", values['translation'] === 'Có' ? 1 : 0);
+            formData.append("translation", values['translation']);
             formData.append("author", values.author);
             formData.append("buy_permission", values.buy_permission);
             formData.append("category_level_1", values.category_level_1);
@@ -116,6 +130,7 @@ export default function Metadata() {
             >
                 <Form
                     name="topicMeta"
+                    form={topicMetaForm}
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 16 }}
                     onFinish={onFinish}
@@ -143,7 +158,7 @@ export default function Metadata() {
                         partner_note: topic.partner_note,
                         voice_note: topic.voice_note,
                         contract_note: topic.contract_note,
-                        translation: topic.translation ? 'Có' : 'Không',
+                        translation: topic.translation
                     }}
                 >
                     <Row>
@@ -189,7 +204,12 @@ export default function Metadata() {
                                 label="Bản dịch"
                                 name="translation"
                             >
-                                <Input />
+                                <Select
+                                    allowClear
+                                >
+                                    <Option value={true}>Có</Option>
+                                    <Option value={false}>Không</Option>
+                                </Select>
                             </Form.Item>
                             <Form.Item colon={false}
                                 label="Trạng thái"
@@ -218,7 +238,7 @@ export default function Metadata() {
                                                 name="category_level_1"
                                             >
                                                 <Select
-                                                    onChange={(e) => { }}
+                                                    onChange={handleSelectCategoryLevel1}
                                                 >
                                                     {
                                                         categoriesLevel1.map(i => (

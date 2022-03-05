@@ -16,6 +16,9 @@
     background-color: rgb(41, 43, 50)!important;
     color: white!important;
 }
+.topic-table .ant-empty-description {
+    color: white!important;
+}
 
 .topic-table .ant-table-tbody > tr.ant-table-placeholder:hover > td {
     background: none;
@@ -36,4 +39,8 @@
 
 .topic-tab .ant-tabs-top > .ant-tabs-nav::before {
     border-bottom: none!important;
+}
+
+.topic-tab div.ant-tabs-nav::before{
+    border: none;
 }

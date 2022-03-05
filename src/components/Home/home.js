@@ -2,12 +2,20 @@ import 'antd/dist/antd.css';
 import './home.style.css';
 
 import TabPaneContent from './tabPane';
+import TokenService from '../../services/token.service';
 
 import { Tabs } from 'antd';
+import { useEffect } from 'react';
 
 const { TabPane } = Tabs;
 
 export default function Home() {
+
+    useEffect(() => {
+        if (!TokenService.getToken()) {
+            window.location.href = '/login'
+        }
+    }, []);
 
     const callback = (key) => {
     }

@@ -302,7 +302,7 @@ const CopyrightTab = () => {
     return (
         <div>
             {
-                (topics.length > 0 && !isUnauthen) && (
+                (!isUnauthen) && (
                     <div>
                         <Modal
                             title="Lý do kết thúc đề tài"
@@ -379,7 +379,7 @@ const CopyrightTab = () => {
                                     </Select>
                                 </Form.Item>
                                 <Form.Item
-                                    label="Mô tả playlisy"
+                                    label="Mô tả playlist"
                                     name="description"
                                     rules={[{ required: true, message: 'Vui lòng điền mô tả playlist' }]}
                                 >
@@ -741,7 +741,7 @@ const ProductionTab = () => {
     return (
         <div>
             {
-                (topics.length > 0 && !isUnauthen) && (
+                (!isUnauthen) && (
                     <div>
                         <Modal
                             title="Ngày hoàn tất dự kiến"
@@ -979,7 +979,7 @@ const UploadTab = () => {
 
         <div>
             {
-                (topics.length > 0 && !isUnauthen) && (
+                (!isUnauthen) && (
 
                     <Table className='topic-table' columns={columns} dataSource={topics} />
                 )
