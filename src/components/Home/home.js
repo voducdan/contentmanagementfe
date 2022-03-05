@@ -4,7 +4,7 @@ import './home.style.css';
 import TabPaneContent from './tabPane';
 import TokenService from '../../services/token.service';
 
-import { Tabs } from 'antd';
+import { Tabs, Button } from 'antd';
 import { useEffect } from 'react';
 
 const { TabPane } = Tabs;
@@ -19,6 +19,12 @@ export default function Home() {
 
     const callback = (key) => {
     }
+
+    const handleLogout = () => {
+        TokenService.removeToken();
+        window.location.reload();
+    }
+
     return (
         <div
             style={{
@@ -26,12 +32,22 @@ export default function Home() {
                 margin: '5%'
             }}
         >
+            <Button
+                style={{
+                    float: 'right'
+                }}
+                type="primary"
+                onClick={handleLogout}>
+                Đăng xuất
+            </Button>
+
             <Tabs
                 className='topic-tab'
                 defaultActiveKey="1"
                 type="card"
                 onChange={callback}
             >
+
                 <TabPane tab="Bản quyền" key="1">
                     <TabPaneContent tab="1" />
                 </TabPane>
