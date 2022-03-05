@@ -5,9 +5,20 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #1F2129!important;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.App .ant-form-item-label > label {
+    color:white!important
+}
+
+/* .App .ant-input {
+    background: rgb(41, 43, 50)!important;
+    border:none;
+    color:white;
+} */

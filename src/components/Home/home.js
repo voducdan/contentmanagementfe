@@ -18,7 +18,12 @@ export default function Home() {
                 margin: '5%'
             }}
         >
-            <Tabs defaultActiveKey="1" type="card" onChange={callback}>
+            <Tabs
+                className='topic-tab'
+                defaultActiveKey="1"
+                type="card"
+                onChange={callback}
+            >
                 <TabPane tab="Bản quyền" key="1">
                     <TabPaneContent tab="1" />
                 </TabPane>

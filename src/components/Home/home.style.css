@@ -4,3 +4,36 @@
 .ant-form-item-label {
     white-space: normal!important;
 }
+.status-menu-select .ant-select-selector {
+    background-color: #bcdaf5!important;
+  }
+
+.topic-table .ant-table {
+    background-color: rgb(41, 43, 50)!important;
+    color: white!important;
+}
+.topic-table .ant-table-thead > tr > th {
+    background-color: rgb(41, 43, 50)!important;
+    color: white!important;
+}
+
+.topic-table .ant-table-tbody > tr.ant-table-placeholder:hover > td {
+    background: none;
+}
+
+.topic-table .ant-table-tbody > tr > td.ant-table-cell-row-hover{
+    background: rgb(55, 57, 68)!important;
+}
+
+.topic-tab .ant-tabs-tab {
+    background-color: rgb(55, 57, 68)!important;
+    border: none!important;
+    color:rgb(172, 172, 172);
+}
+.topic-tab .ant-tabs-tab-active .ant-tabs-tab-btn {
+    color:white!important
+}
+
+.topic-tab .ant-tabs-top > .ant-tabs-nav::before {
+    border-bottom: none!important;
+}

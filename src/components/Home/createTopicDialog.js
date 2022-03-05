@@ -61,12 +61,14 @@ export default function CreateTopic(props) {
                 <Form.Item
                     label="Tên gốc"
                     name="original_name"
+                    rules={[{ required: true, message: 'Vui lòng điền tên gốc' }]}
                 >
                     <Input />
                 </Form.Item>
                 <Form.Item
                     label="Tên tiếng việt"
                     name="vi_name"
+                    rules={[{ required: true, message: 'Vui lòng điền tên tiếng việt' }]}
                 >
                     <Input />
                 </Form.Item>
@@ -74,31 +76,34 @@ export default function CreateTopic(props) {
                 <Form.Item
                     label="Tít phụ"
                     name="short_description"
-                    rules={[{ required: true, message: 'Vui lòng điền tích phụ' }]}
                 >
                     <Input.TextArea />
                 </Form.Item>
                 <Form.Item
                     label="Tác giả"
                     name="author"
+                    rules={[{ required: true, message: 'Vui lòng điền tác giả' }]}
                 >
                     <Input />
                 </Form.Item>
                 <Form.Item
                     label="Đơn vị uỷ thác bản quyền"
                     name="copyright_trustee"
+                    rules={[{ required: true, message: 'Vui lòng điền đơn vị uỷ thác bản quyền' }]}
                 >
                     <Input />
                 </Form.Item>
                 <Form.Item
                     label="Từ khoá gợi nhớ"
                     name="keywords"
+                    rules={[{ required: true, message: 'Vui lòng điền từ khoá gợi nhớ' }]}
                 >
                     <Input placeholder="Mỗi từ khoá cách nhau bằng dấu ','" />
                 </Form.Item>
                 <Form.Item
                     label="Bản dịch"
                     name="translation"
+                    rules={[{ required: true, message: 'Vui lòng chọn bản dịch' }]}
                 >
                     <Select
                         allowClear

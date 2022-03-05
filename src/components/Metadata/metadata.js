@@ -12,7 +12,8 @@ import {
     Button,
     Row,
     Col,
-    Upload
+    Upload,
+    Modal
 } from "antd";
 import { UploadOutlined } from '@ant-design/icons';
 const { Option } = Select;
@@ -23,8 +24,8 @@ export default function Metadata() {
     const [topicCancel, setTopicCancel] = useState(null);
     const [categoriesLevel1, setCategoriesLevel1] = useState([]);
     const [categoriesLevel2, setCategoriesLevel2] = useState([]);
-    const [currentCategoryLevel1, setCurrentCategoryLevel1] = useState(null);
-    const [currentCategoryLevel2, setCurrentCategoryLevel2] = useState(null);
+    const [openUpdateTopicMetaModal, setOpenUpdateTopicMetaModal] = useState(false);
+    const [updateTopicMetaErr, setUpdateTopicMetaErr] = useState(false);
     const { id } = useParams();
 
     useEffect(() => {
@@ -59,22 +60,45 @@ export default function Metadata() {
         }
     }, [topic]);
 
-    useEffect(() => {
-        if (categoriesLevel1.length > 0) {
-            const categorylevel1Name = categoriesLevel1[categoriesLevel1.findIndex(i => Number(i.id) === topic.category_level_1)]['name'];
-            setCurrentCategoryLevel1(categorylevel1Name);
+    const onFinish = async (values) => {
+        try {
+            const formData = new FormData();
+            if (values.coverImg) {
+                formData.append("coverImg", values.coverImg.file);
+            }
+            formData.append("id", topic['id']);
+            formData.append("translation", values['translation'] === 'Có' ? 1 : 0);
+            formData.append("author", values.author);
+            formData.append("buy_permission", values.buy_permission);
+            formData.append("category_level_1", values.category_level_1);
+            formData.append("category_level_2", values.category_level_2);
+            formData.append("contract_note", values.contract_note);
+            formData.append("contract_term", values.contract_term);
+            formData.append("contracted_at", values.contracted_at);
+            formData.append("copyright_trustee", values.copyright_trustee);
+            formData.append("cover_price", values.cover_price);
+            formData.append("description", values.description);
+            formData.append("keywords", values.keywords);
+            formData.append("original_name", values.original_name);
+            formData.append("partner_note", values.partner_note);
+            formData.append("produce_cost", values.produce_cost);
+            formData.append("royalty", values.royalty);
+            formData.append("short_description", values.short_description);
+            formData.append("status", values.status);
+            formData.append("translation_cost", values.translation_cost);
+            formData.append("type_of_sale", values.type_of_sale);
+            formData.append("vi_name", values.vi_name);
+            formData.append("voice_note", values.voice_note);
+            formData.append("updated_at", new Date().toISOString());
+            const res = await TopicService.update({ data: formData, type: 'metadata' });
+            const data = await res.data.data;
+            setTopic(data);
+            setOpenUpdateTopicMetaModal(true);
         }
-    }, [categoriesLevel1]);
-
-    useEffect(() => {
-        if (categoriesLevel2.length > 0) {
-            const categorylevel2Name = categoriesLevel2[categoriesLevel2.findIndex(i => Number(i.id) === topic.category_level_2)]['name'];
-            setCurrentCategoryLevel2(categorylevel2Name);
+        catch (err) {
+            setOpenUpdateTopicMetaModal(true);
+            setUpdateTopicMetaErr(true);
         }
-    }, [categoriesLevel2]);
-
-    const onFinish = () => {
-
     }
 
     const coverImgProps = {
@@ -174,7 +198,7 @@ export default function Metadata() {
                                 <Input disabled />
                             </Form.Item>
                             {
-                                (topic.status.id === 10 || topic.status.id === 11) && (
+                                (topic.status_id === 10 || topic.status_id === 11) && (
                                     <Form.Item colon={false}
                                         label="Lý do kết thúc đề tài"
                                         name="reason_of_canceling"
@@ -284,31 +308,31 @@ export default function Metadata() {
                                                 label="Ngày ký HĐ"
                                                 name="contracted_at"
                                             >
-                                                <Input.TextArea />
+                                                <Input />
                                             </Form.Item>
                                             <Form.Item colon={false}
                                                 label="Thời hạn HĐ"
                                                 name="contract_term"
                                             >
-                                                <Input.TextArea />
+                                                <Input />
                                             </Form.Item>
                                             <Form.Item colon={false}
                                                 label="copyright_price BQ"
                                                 name="keywords"
                                             >
-                                                <Input.TextArea />
+                                                <Input />
                                             </Form.Item>
                                             <Form.Item colon={false}
                                                 label="Phí dịch"
                                                 name="translation_cost"
                                             >
-                                                <Input.TextArea />
+                                                <Input />
                                             </Form.Item>
                                             <Form.Item colon={false}
                                                 label="Mua quyền gì"
                                                 name="buy_permission"
                                             >
-                                                <Input.TextArea />
+                                                <Input />
                                             </Form.Item>
                                         </Col>
                                     </Row>
@@ -321,9 +345,6 @@ export default function Metadata() {
                             textAlign: 'center'
                         }}
                     >
-                        <Button key="back" onClick={() => { }}>
-                            Thoát
-                        </Button>,
                         <Button
                             key="submit"
                             htmlType="submit"
@@ -333,6 +354,14 @@ export default function Metadata() {
                         </Button>
                     </div>
                 </Form>
+                <Modal
+                    title={null}
+                    visible={openUpdateTopicMetaModal}
+                    onCancel={() => { setOpenUpdateTopicMetaModal(false); setUpdateTopicMetaErr(false) }}
+                    onOk={() => { setOpenUpdateTopicMetaModal(false); setUpdateTopicMetaErr(false) }}
+                >
+                    {updateTopicMetaErr ? "Cập nhật đề tài không thành công, vui lòng thử lại sau!" : "Cập nhật đề tài thành công!"}
+                </Modal>
             </div >
         ) : ''
     )
