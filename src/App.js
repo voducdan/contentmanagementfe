@@ -27,9 +27,9 @@ function App() {
                         alignItems: 'center'
                     }}
                 >
-                    <div>
+                    <a href='/'>
                         <img src='/logo.png' />
-                    </div>
+                    </a>
                     <Button
                         type="primary"
                         onClick={handleLogout}>
