@@ -27,6 +27,7 @@ export default function Metadata() {
     const [categoriesLevel2, setCategoriesLevel2] = useState([]);
     const [openUpdateTopicMetaModal, setOpenUpdateTopicMetaModal] = useState(false);
     const [updateTopicMetaErr, setUpdateTopicMetaErr] = useState(false);
+    const [deleteTopicErr, setDeleteTopicErr] = useState(false);
     const { id } = useParams();
 
     const [topicMetaForm] = Form.useForm();
@@ -72,6 +73,16 @@ export default function Metadata() {
         topicMetaForm.setFieldsValue({
             category_level_2: null
         })
+    }
+
+    const handleDeleteTopic = async () => {
+        try {
+            const res = await TopicService.deleteTopic(id);
+            window.location.href = '/'
+        }
+        catch (err) {
+            setDeleteTopicErr(true);
+        }
     }
 
     const onFinish = async (values) => {
@@ -121,268 +132,297 @@ export default function Metadata() {
 
     return (
         topic ? (
-            <div
-                style={{
-                    marginTop: '30px',
-                    display: 'flex',
-                    justifyContent: 'center'
-                }}
-            >
-                <Form
-                    name="topicMeta"
-                    form={topicMetaForm}
-                    labelCol={{ span: 8 }}
-                    wrapperCol={{ span: 16 }}
-                    onFinish={onFinish}
-                    autoComplete="off"
-                    initialValues={{
-                        original_name: topic.original_name,
-                        vi_name: topic.vi_name,
-                        short_description: topic.short_description,
-                        author: topic.author,
-                        copyright_trustee: topic.copyright_trustee,
-                        keywords: topic.keywords,
-                        status: topic.status.name,
-                        category_level_1: topic.category_level_1,
-                        category_level_2: topic.category_level_2,
-                        description: topic.description,
-                        type_of_sale: topic.type_of_sale,
-                        contracted_at: topic.contracted_at,
-                        contract_term: topic.contract_term,
-                        cover_price: topic.cover_price,
-                        royalty: topic.royalty,
-                        copyright_price: topic.copyright_price,
-                        translation_cost: topic.translation_cost,
-                        produce_cost: topic.produce_cost,
-                        buy_permission: topic.buy_permission,
-                        partner_note: topic.partner_note,
-                        voice_note: topic.voice_note,
-                        contract_note: topic.contract_note,
-                        translation: topic.translation
+            <div>
+                <div
+                    style={{
+                        margin: '30px 10%',
+                        display: 'flex',
+                        justifyContent: 'flex-end'
                     }}
                 >
-                    <Row>
-                        <Col span={topic.tab === 1 ? 24 : 8}>
-                            <Form.Item colon={false} onChange={(e) => { console.log(e) }}
-                                label="Tên gốc"
-                                name="original_name"
-                            >
-                                <Input />
-                            </Form.Item>
-                            <Form.Item colon={false}
-                                label="Tên tiếng việt"
-                                name="vi_name"
-                            >
-                                <Input />
-                            </Form.Item>
-                            <Form.Item colon={false}
-                                label="Tít phụ"
-                                name="short_description"
-                                rules={[{ required: true, message: 'Vui lòng điền tích phụ' }]}
-                            >
-                                <Input.TextArea />
-                            </Form.Item>
-                            <Form.Item colon={false}
-                                label="Tác giả"
-                                name="author"
-                            >
-                                <Input />
-                            </Form.Item>
-                            <Form.Item colon={false}
-                                label="Đơn vị uỷ thác bản quyền"
-                                name="copyright_trustee"
-                            >
-                                <Input />
-                            </Form.Item>
-                            <Form.Item colon={false}
-                                label="Từ khoá gợi nhớ"
-                                name="keywords"
-                            >
-                                <Input placeholder="Mỗi từ khoá cách nhau bằng dấu ','" />
-                            </Form.Item>
-                            <Form.Item colon={false}
-                                label="Bản dịch"
-                                name="translation"
-                            >
-                                <Select
-                                    allowClear
-                                >
-                                    <Option value={true}>Có</Option>
-                                    <Option value={false}>Không</Option>
-                                </Select>
-                            </Form.Item>
-                            <Form.Item colon={false}
-                                label="Trạng thái"
-                                name="status"
-                            >
-                                <Input disabled />
-                            </Form.Item>
-                            {
-                                (topic.status_id === 10 || topic.status_id === 11) && (
-                                    <Form.Item colon={false}
-                                        label="Lý do kết thúc đề tài"
-                                        name="reason_of_canceling"
-                                    >
-                                        <Input.TextArea defaultValue={topicCancel.reason} />
-                                    </Form.Item>
-                                )
-                            }
-                        </Col>
-                        {
-                            topic.tab >= 2 && (
-                                <Col span={16}>
-                                    <Row>
-                                        <Col span={12}>
-                                            <Form.Item colon={false}
-                                                label="Category tầng 1"
-                                                name="category_level_1"
-                                            >
-                                                <Select
-                                                    onChange={handleSelectCategoryLevel1}
-                                                >
-                                                    {
-                                                        categoriesLevel1.map(i => (
-                                                            <Option key={i.id} value={Number(i.id)}>{i.name}</Option>
-                                                        ))
-                                                    }
-                                                </Select>
-                                            </Form.Item>
-                                            <Form.Item colon={false}
-                                                label="Category tầng 2"
-                                                name="category_level_2"
-                                            >
-                                                <Select
-                                                    allowClear
-                                                >
-                                                    {
-                                                        categoriesLevel2.map(i => (
-                                                            <Option key={i.id} value={Number(i.id)}>{i.name}</Option>
-                                                        ))
-                                                    }
-                                                </Select>
-                                            </Form.Item>
-                                            <Form.Item colon={false}
-                                                label="Kinh doanh"
-                                                name="type_of_sale"
-                                            >
-                                                <Select
-                                                    allowClear
-                                                >
-                                                    <Option value='Vip'>Vip</Option>
-                                                    <Option value='Free'>Free</Option>
-                                                    <Option value='Coin'>Coin</Option>
-                                                </Select>
-                                            </Form.Item>
-                                            <Form.Item colon={false}
-                                                label="Giá bìa"
-                                                name="cover_price"
-                                            >
-                                                <Input />
-                                            </Form.Item>
-                                            <Form.Item colon={false}
-                                                label="Royalty%"
-                                                name="royalty"
-                                            >
-                                                <Input />
-                                            </Form.Item>
-                                            <Form.Item colon={false}
-                                                label="Phí sản xuất"
-                                                name="produce_cost"
-                                            >
-                                                <Input />
-                                            </Form.Item>
-                                            <Form.Item colon={false}
-                                                label="Mô tả playlist"
-                                                name="description"
-                                            >
-                                                <Input.TextArea />
-                                            </Form.Item>
-                                            <Form.Item colon={false}
-                                                label="Ghi chú về đối tác dịch"
-                                                name="partner_note"
-                                            >
-                                                <Input.TextArea />
-                                            </Form.Item>
-                                            <Form.Item colon={false}
-                                                label="Lưu ý giọng đọc"
-                                                name="voice_note"
-                                            >
-                                                <Input.TextArea />
-                                            </Form.Item>
-                                            <Form.Item colon={false}
-                                                label="Lưu ý khác trong HĐ"
-                                                name="contract_note"
-                                            >
-                                                <Input.TextArea />
-                                            </Form.Item>
-                                            <Form.Item
-                                                name="coverImg"
-                                            >
-                                                <Upload {...coverImgProps} beforeUpload={() => false} >
-                                                    <Button icon={<UploadOutlined />}>Click để upload ảnh bìa</Button>
-                                                </Upload>
-                                            </Form.Item>
-                                        </Col>
-                                        <Col span={12}>
-                                            <Form.Item colon={false}
-                                                label="Ngày ký HĐ"
-                                                name="contracted_at"
-                                            >
-                                                <Input />
-                                            </Form.Item>
-                                            <Form.Item colon={false}
-                                                label="Thời hạn HĐ"
-                                                name="contract_term"
-                                            >
-                                                <Input />
-                                            </Form.Item>
-                                            <Form.Item colon={false}
-                                                label="copyright_price BQ"
-                                                name="keywords"
-                                            >
-                                                <Input />
-                                            </Form.Item>
-                                            <Form.Item colon={false}
-                                                label="Phí dịch"
-                                                name="translation_cost"
-                                            >
-                                                <Input />
-                                            </Form.Item>
-                                            <Form.Item colon={false}
-                                                label="Mua quyền gì"
-                                                name="buy_permission"
-                                            >
-                                                <Input />
-                                            </Form.Item>
-                                        </Col>
-                                    </Row>
-                                </Col>
-                            )
-                        }
-                    </Row>
-                    <div
-                        style={{
-                            textAlign: 'center'
+                    <Button
+                        type="danger"
+                        onClick={handleDeleteTopic}>
+                        Xoá đề tài
+                    </Button>
+                </div>
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'center'
+                    }}
+                >
+                    <Form
+                        name="topicMeta"
+                        form={topicMetaForm}
+                        labelCol={{ span: 8 }}
+                        wrapperCol={{ span: 16 }}
+                        onFinish={onFinish}
+                        autoComplete="off"
+                        initialValues={{
+                            original_name: topic.original_name,
+                            vi_name: topic.vi_name,
+                            short_description: topic.short_description,
+                            author: topic.author,
+                            copyright_trustee: topic.copyright_trustee,
+                            keywords: topic.keywords,
+                            status: topic.status.name,
+                            category_level_1: topic.category_level_1,
+                            category_level_2: topic.category_level_2,
+                            description: topic.description,
+                            type_of_sale: topic.type_of_sale,
+                            contracted_at: topic.contracted_at,
+                            contract_term: topic.contract_term,
+                            cover_price: topic.cover_price,
+                            royalty: topic.royalty,
+                            copyright_price: topic.copyright_price,
+                            translation_cost: topic.translation_cost,
+                            produce_cost: topic.produce_cost,
+                            buy_permission: topic.buy_permission,
+                            partner_note: topic.partner_note,
+                            voice_note: topic.voice_note,
+                            contract_note: topic.contract_note,
+                            translation: topic.translation
                         }}
                     >
-                        <Button
-                            key="submit"
-                            htmlType="submit"
-                            type="primary"
+                        <Row>
+                            <Col span={topic.tab === 1 ? 24 : 8}>
+                                <Form.Item colon={false} onChange={(e) => { console.log(e) }}
+                                    label="Tên gốc"
+                                    name="original_name"
+                                >
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item colon={false}
+                                    label="Tên tiếng việt"
+                                    name="vi_name"
+                                >
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item colon={false}
+                                    label="Tít phụ"
+                                    name="short_description"
+                                    rules={[{ required: true, message: 'Vui lòng điền tích phụ' }]}
+                                >
+                                    <Input.TextArea />
+                                </Form.Item>
+                                <Form.Item colon={false}
+                                    label="Tác giả"
+                                    name="author"
+                                >
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item colon={false}
+                                    label="Đơn vị uỷ thác bản quyền"
+                                    name="copyright_trustee"
+                                >
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item colon={false}
+                                    label="Từ khoá gợi nhớ"
+                                    name="keywords"
+                                >
+                                    <Input placeholder="Mỗi từ khoá cách nhau bằng dấu ','" />
+                                </Form.Item>
+                                <Form.Item colon={false}
+                                    label="Bản dịch"
+                                    name="translation"
+                                >
+                                    <Select
+                                        allowClear
+                                    >
+                                        <Option value={true}>Có</Option>
+                                        <Option value={false}>Không</Option>
+                                    </Select>
+                                </Form.Item>
+                                <Form.Item colon={false}
+                                    label="Trạng thái"
+                                    name="status"
+                                >
+                                    <Input disabled />
+                                </Form.Item>
+                                {
+                                    (topic.status_id === 10 || topic.status_id === 11) && (
+                                        <Form.Item colon={false}
+                                            label="Lý do kết thúc đề tài"
+                                            name="reason_of_canceling"
+                                        >
+                                            <Input.TextArea defaultValue={topicCancel.reason} />
+                                        </Form.Item>
+                                    )
+                                }
+                            </Col>
+                            {
+                                topic.tab >= 2 && (
+                                    <Col span={16}>
+                                        <Row>
+                                            <Col span={12}>
+                                                <Form.Item colon={false}
+                                                    label="Category tầng 1"
+                                                    name="category_level_1"
+                                                >
+                                                    <Select
+                                                        onChange={handleSelectCategoryLevel1}
+                                                    >
+                                                        {
+                                                            categoriesLevel1.map(i => (
+                                                                <Option key={i.id} value={Number(i.id)}>{i.name}</Option>
+                                                            ))
+                                                        }
+                                                    </Select>
+                                                </Form.Item>
+                                                <Form.Item colon={false}
+                                                    label="Category tầng 2"
+                                                    name="category_level_2"
+                                                >
+                                                    <Select
+                                                        allowClear
+                                                    >
+                                                        {
+                                                            categoriesLevel2.map(i => (
+                                                                <Option key={i.id} value={Number(i.id)}>{i.name}</Option>
+                                                            ))
+                                                        }
+                                                    </Select>
+                                                </Form.Item>
+                                                <Form.Item colon={false}
+                                                    label="Kinh doanh"
+                                                    name="type_of_sale"
+                                                >
+                                                    <Select
+                                                        allowClear
+                                                    >
+                                                        <Option value='Vip'>Vip</Option>
+                                                        <Option value='Free'>Free</Option>
+                                                        <Option value='Coin'>Coin</Option>
+                                                    </Select>
+                                                </Form.Item>
+                                                <Form.Item colon={false}
+                                                    label="Giá bìa"
+                                                    name="cover_price"
+                                                >
+                                                    <Input />
+                                                </Form.Item>
+                                                <Form.Item colon={false}
+                                                    label="Royalty%"
+                                                    name="royalty"
+                                                >
+                                                    <Input />
+                                                </Form.Item>
+                                                <Form.Item colon={false}
+                                                    label="Phí sản xuất"
+                                                    name="produce_cost"
+                                                >
+                                                    <Input />
+                                                </Form.Item>
+                                                <Form.Item colon={false}
+                                                    label="Mô tả playlist"
+                                                    name="description"
+                                                >
+                                                    <Input.TextArea />
+                                                </Form.Item>
+                                                <Form.Item colon={false}
+                                                    label="Ghi chú về đối tác dịch"
+                                                    name="partner_note"
+                                                >
+                                                    <Input.TextArea />
+                                                </Form.Item>
+                                                <Form.Item colon={false}
+                                                    label="Lưu ý giọng đọc"
+                                                    name="voice_note"
+                                                >
+                                                    <Input.TextArea />
+                                                </Form.Item>
+                                                <Form.Item colon={false}
+                                                    label="Lưu ý khác trong HĐ"
+                                                    name="contract_note"
+                                                >
+                                                    <Input.TextArea />
+                                                </Form.Item>
+                                                <Form.Item
+                                                    name="coverImg"
+                                                >
+                                                    <Upload {...coverImgProps} beforeUpload={() => false} >
+                                                        <Button icon={<UploadOutlined />}>Click để upload ảnh bìa</Button>
+                                                    </Upload>
+                                                </Form.Item>
+                                            </Col>
+                                            <Col span={12}>
+                                                <Form.Item colon={false}
+                                                    label="Ngày ký HĐ"
+                                                    name="contracted_at"
+                                                >
+                                                    <Input />
+                                                </Form.Item>
+                                                <Form.Item colon={false}
+                                                    label="Thời hạn HĐ"
+                                                    name="contract_term"
+                                                >
+                                                    <Input />
+                                                </Form.Item>
+                                                <Form.Item colon={false}
+                                                    label="copyright_price BQ"
+                                                    name="keywords"
+                                                >
+                                                    <Input />
+                                                </Form.Item>
+                                                <Form.Item colon={false}
+                                                    label="Phí dịch"
+                                                    name="translation_cost"
+                                                >
+                                                    <Input />
+                                                </Form.Item>
+                                                <Form.Item colon={false}
+                                                    label="Mua quyền gì"
+                                                    name="buy_permission"
+                                                >
+                                                    <Input />
+                                                </Form.Item>
+                                            </Col>
+                                        </Row>
+                                    </Col>
+                                )
+                            }
+                        </Row>
+                        <div
+                            style={{
+                                textAlign: 'center'
+                            }}
                         >
-                            Lưu
-                        </Button>
-                    </div>
-                </Form>
-                <Modal
-                    title={null}
-                    visible={openUpdateTopicMetaModal}
-                    onCancel={() => { setOpenUpdateTopicMetaModal(false); setUpdateTopicMetaErr(false) }}
-                    onOk={() => { setOpenUpdateTopicMetaModal(false); setUpdateTopicMetaErr(false) }}
-                >
-                    {updateTopicMetaErr ? "Cập nhật đề tài không thành công, vui lòng thử lại sau!" : "Cập nhật đề tài thành công!"}
-                </Modal>
-            </div >
+                            <Button
+                                key="submit"
+                                htmlType="submit"
+                                type="primary"
+                            >
+                                Lưu
+                            </Button>
+                        </div>
+                    </Form>
+                    <Modal
+                        title={null}
+                        visible={openUpdateTopicMetaModal}
+                        footer={[
+                            <Button key="submit" type="primary" onClick={() => { setOpenUpdateTopicMetaModal(false); setUpdateTopicMetaErr(false) }}>
+                                Đóng
+                            </Button>,
+                        ]}
+                    >
+                        {updateTopicMetaErr ? "Cập nhật đề tài không thành công, vui lòng thử lại sau!" : "Cập nhật đề tài thành công!"}
+                        {deleteTopicErr ? "Cập nhật đề tài không thành công, vui lòng thử lại sau!" : "Cập nhật đề tài thành công!"}
+                    </Modal>
+                    <Modal
+                        title={null}
+                        visible={deleteTopicErr}
+                        footer={[
+                            <Button key="submit" type="primary" onClick={() => { setDeleteTopicErr(false) }}>
+                                Đóng
+                            </Button>,
+                        ]}
+                    >
+                        {"Xoá đề tài không thành công, vui lòng thử lại sau!"}
+                    </Modal>
+                </div >
+            </div>
         ) : ''
     )
 }

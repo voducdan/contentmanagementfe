@@ -34,7 +34,9 @@ const CopyrightTab = () => {
     const [currentStatus, setCurrentStatus] = useState(null);
     const [categoriesLevel1, setCategoriesLevel1] = useState([]);
     const [categoriesLevel2, setCategoriesLevel2] = useState([]);
+    const [filteredStatus, setFilteredStatus] = useState([]);
     const [isUnauthen, setIsUnauthen] = useState(false);
+    const [maxTab, setMaxTab] = useState({});
     const [updateTopicDetailForm] = Form.useForm();
 
     useEffect(() => {
@@ -54,6 +56,7 @@ const CopyrightTab = () => {
                 }
             }
         };
+
         const fetchStatuses = async () => {
             const res = await StatusService.getAll(1);
             const data = await res.data.data;
@@ -63,6 +66,26 @@ const CopyrightTab = () => {
         fetchStatuses();
         fetchTopics();
     }, []);
+
+    useEffect(() => {
+        const fetchMaxTab = async () => {
+            let topicMaxTab = {};
+            for (let t of topics) {
+                const res = await TopicService.getMaxTab(t.topic_id);
+                const data = await res.data.maxTab;
+                topicMaxTab[t.topic_id] = data;
+            }
+            setMaxTab(topicMaxTab);
+        }
+
+        fetchMaxTab();
+        const topicStatus = topics.map(i => ({
+            value: i.status.id,
+            text: i.status.name
+        }));
+        const distinctTopicStatus = [...new Map(topicStatus.map(i => [i['value'], i])).values()];
+        setFilteredStatus(distinctTopicStatus);
+    }, [topics]);
 
     const showModal = () => {
         setIsModalVisible(true);
@@ -129,10 +152,10 @@ const CopyrightTab = () => {
         setOpenReasonModal(false);
     }
 
-    const StatusMenu = ({ translation, id, status }) => {
+    const StatusMenu = ({ translation, id, status, disabled }) => {
         const filteredStatuses = translation === true ? statuses : statuses.filter(i => !(i.id === 8 || i.id === 9));
         return (
-            <Select className='status-menu-select' defaultValue={status} onChange={(e) => { handleMenuClick(e, id) }}>
+            <Select disabled={disabled} className='status-menu-select' defaultValue={status} onChange={(e) => { handleMenuClick(e, id) }}>
                 {
                     filteredStatuses.map(i => (
                         <Option key={i.id} value={i.id}>{i.name}</Option>
@@ -223,6 +246,7 @@ const CopyrightTab = () => {
             title: 'Tên đề tài',
             key: 'original_name',
             dataIndex: ['original_name', 'topic_id'],
+            sorter: (a, b) => a.original_name.localeCompare(b.original_name),
             render: (_, data) => {
                 return (
                     <>
@@ -235,10 +259,12 @@ const CopyrightTab = () => {
             title: 'Trạng thái',
             key: 'status',
             dataIndex: ['status', 'translation'],
+            filters: filteredStatus,
+            onFilter: (value, record) => record.status.id === value,
             render: (_, data) => {
                 return (
                     <>
-                        <StatusMenu style={{ width: 'max-content' }} status={data.status.id} translation={data.translation} id={data.id} />
+                        <StatusMenu disabled={data.tab < maxTab[data.topic_id]} style={{ width: 'max-content' }} status={data.status.id} translation={data.translation} id={data.id} />
                     </>
                 )
             }
@@ -523,6 +549,8 @@ const ProductionTab = () => {
     const [onOpenExpectedDayModal, setOnOpenExpectedDayModal] = useState(false);
     const [onOpenProduceCost, setOnOpenProduceCost] = useState(false);
     const [isUnauthen, setIsUnauthen] = useState(false);
+    const [maxTab, setMaxTab] = useState({});
+
 
     const [numOfExpectedDayForm, procudeCostForm] = Form.useForm();
 
@@ -555,8 +583,22 @@ const ProductionTab = () => {
     }, []);
 
     useEffect(() => {
-        numOfExpectedDayForm.setFieldsValue({ expected_completetion_day: prefill })
-    }, [numOfExpectedDayForm, prefill])
+        numOfExpectedDayForm.setFieldsValue({ expected_completetion_day: prefill });
+    }, [numOfExpectedDayForm, prefill]);
+
+    useEffect(() => {
+        const fetchMaxTab = async () => {
+            let topicMaxTab = {};
+            for (let t of topics) {
+                const res = await TopicService.getMaxTab(t.topic_id);
+                const data = await res.data.maxTab;
+                topicMaxTab[t.topic_id] = data;
+            }
+            setMaxTab(topicMaxTab);
+        }
+
+        fetchMaxTab();
+    }, [topics]);
 
     const updateTopic = async (body) => {
         const res = await TopicService.update({ data: body, type: '' });
@@ -639,9 +681,9 @@ const ProductionTab = () => {
         setOnOpenProduceCost(false);
     }
 
-    const StatusMenu = ({ id, status }) => {
+    const StatusMenu = ({ id, status, disabled }) => {
         return (
-            <Select className='status-menu-select' defaultValue={status} onChange={(e) => { handleMenuClick(e, id) }}>
+            <Select disabled={disabled} className='status-menu-select' defaultValue={status} onChange={(e) => { handleMenuClick(e, id) }}>
                 {
                     statuses.map(i => (
                         <Option key={i.id} value={i.id}>{i.name}</Option>
@@ -656,6 +698,7 @@ const ProductionTab = () => {
             title: 'Tên đề tài',
             key: 'original_name',
             dataIndex: ['original_name', 'topic_id'],
+            sorter: (a, b) => a.original_name.localeCompare(b.original_name),
             render: (_, data) => {
                 return (
                     <>
@@ -668,10 +711,11 @@ const ProductionTab = () => {
             title: 'Trạng thái',
             key: 'status',
             dataIndex: ['status', 'translation'],
+            onFilter: (value, record) => record.status.name.indexOf(value) === 0,
             render: (_, data) => {
                 return (
                     <>
-                        <StatusMenu style={{ width: 'max-content' }} status={data.status.id} id={data.id} />
+                        <StatusMenu disabled={data.tab < maxTab[data.topic_id]} style={{ width: 'max-content' }} status={data.status.id} id={data.id} />
                     </>
                 )
             }
@@ -828,6 +872,7 @@ const UploadTab = () => {
     const [topics, setTopic] = useState([]);
     const [statuses, setStatuses] = useState([]);
     const [isUnauthen, setIsUnauthen] = useState(false);
+    const [maxTab, setMaxTab] = useState({});
 
     useEffect(() => {
         const fetchTopics = async () => {
@@ -859,6 +904,20 @@ const UploadTab = () => {
         fetchTopics();
     }, []);
 
+    useEffect(() => {
+        const fetchMaxTab = async () => {
+            let topicMaxTab = {};
+            for (let t of topics) {
+                const res = await TopicService.getMaxTab(t.topic_id);
+                const data = await res.data.maxTab;
+                topicMaxTab[t.topic_id] = data;
+            }
+            setMaxTab(topicMaxTab);
+        }
+
+        fetchMaxTab();
+    }, [topics]);
+
     const updateTopic = async (body) => {
         const res = await TopicService.update({ data: body, type: '' });
         const updatedTopic = await res.data.data;
@@ -886,9 +945,9 @@ const UploadTab = () => {
         updateTopic(topicUpdatedData);
     }
 
-    const StatusMenu = ({ id, status }) => {
+    const StatusMenu = ({ id, status, disabled }) => {
         return (
-            <Select className='status-menu-select' defaultValue={status} onChange={(e) => { handleMenuClick(e, id) }}>
+            <Select disabled={disabled} className='status-menu-select' defaultValue={status} onChange={(e) => { handleMenuClick(e, id) }}>
                 {
                     statuses.map(i => (
                         <Option key={i.id} value={i.id}>{i.name}</Option>
@@ -903,6 +962,7 @@ const UploadTab = () => {
             title: 'Tên đề tài',
             key: 'original_name',
             dataIndex: ['original_name', 'topic_id'],
+            sorter: (a, b) => a.original_name.localeCompare(b.original_name),
             render: (_, data) => {
                 return (
                     <>
@@ -915,10 +975,11 @@ const UploadTab = () => {
             title: 'Trạng thái',
             key: 'status',
             dataIndex: ['status', 'translation'],
+            onFilter: (value, record) => record.status.name.indexOf(value) === 0,
             render: (_, data) => {
                 return (
                     <>
-                        <StatusMenu style={{ width: 'max-content' }} status={data.status.id} id={data.id} />
+                        <StatusMenu disabled={data.tab < maxTab[data.topic_id]} style={{ width: 'max-content' }} status={data.status.id} id={data.id} />
                     </>
                 )
             }

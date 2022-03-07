@@ -1,31 +1,35 @@
 import http from './axios';
 
-import { getToken } from './token.service';
-
-let headers = {
-    'Content-Type': 'application/json',
-    'authorization': `Bearer ${getToken()}`
-}
-
 const create = data => {
-    return http.post("/topics", data, { headers });
+    return http.post("/topics", data);
 };
 
 const getAll = (tab) => {
-    return http.get(`/topics?tab=${tab}`, { headers });
+    return http.get(`/topics?tab=${tab}`);
 };
 const getOne = (id) => {
-    return http.get(`/topics/${id}`, { headers });
+    return http.get(`/topics/${id}`);
 };
 
 const update = (data) => {
-    headers.type = data.type;
-    return http.put("/topics", data.data, { headers });
+    return http.put("/topics", data.data, {
+        headers: { type: data.type }
+    });
+};
+
+const deleteTopic = (id) => {
+    return http.delete(`/topics/${id}`);
+};
+
+const getMaxTab = (topicId) => {
+    return http.get(`/topics/maxtab/${topicId}`);
 };
 
 export default {
     create,
     getAll,
     update,
-    getOne
+    getOne,
+    getMaxTab,
+    deleteTopic
 };

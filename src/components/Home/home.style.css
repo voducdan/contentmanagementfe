@@ -28,6 +28,10 @@
     background: rgb(55, 57, 68)!important;
 }
 
+.topic-tab .ant-table-column-sort {
+    background: rgb(41, 43, 50)!important;
+}
+
 .topic-tab .ant-tabs-tab {
     background-color: rgb(55, 57, 68)!important;
     border: none!important;

@@ -112,9 +112,15 @@ export default function CreateTopic(props) {
                         <Option value={false}>Không</Option>
                     </Select>
                 </Form.Item>
-                <Button key="back" onClick={handleCancel}>
+                <Button
+                    style={{
+                        marginRight: '10px'
+                    }}
+                    key="back"
+                    onClick={handleCancel}
+                >
                     Thoát
-                </Button>,
+                </Button>
                 <Button
                     key="submit"
                     htmlType="submit"
