@@ -21,8 +21,8 @@ const deleteTopic = (id) => {
     return http.delete(`/topics/${id}`);
 };
 
-const getMaxTab = (topicId) => {
-    return http.get(`/topics/maxtab/${topicId}`);
+const getNextTabStatus = (topicId, tab) => {
+    return http.get(`/topics/maxtab/${topicId}?tab=${tab}`);
 };
 
 export default {
@@ -30,6 +30,6 @@ export default {
     getAll,
     update,
     getOne,
-    getMaxTab,
+    getNextTabStatus,
     deleteTopic
 };
