@@ -25,6 +25,7 @@ import { UploadOutlined } from '@ant-design/icons';
 const { Option } = Select;
 
 const CopyrightTab = () => {
+
     const [topics, setTopic] = useState([]);
     const [statuses, setStatuses] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -1066,19 +1067,19 @@ export default function TabPaneContent({ tab }) {
     switch (tab) {
         case '1':
             return (
-                <CopyrightTab />
+                <CopyrightTab tab={tab} />
             )
         case '2':
             return (
-                <ProductionTab />
+                <ProductionTab tab={tab} />
             )
         case '3':
             return (
-                <UploadTab />
+                <UploadTab tab={tab} />
             )
         default:
             return (
-                <CopyrightTab />
+                <CopyrightTab tab={tab} />
             )
     }
 }

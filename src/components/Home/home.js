@@ -5,11 +5,13 @@ import TabPaneContent from './tabPane';
 import TokenService from '../../services/token.service';
 
 import { Tabs } from 'antd';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const { TabPane } = Tabs;
 
 export default function Home() {
+
+    const [tab, setTab] = useState('1');
 
     useEffect(() => {
         if (!TokenService.getToken()) {
@@ -18,7 +20,7 @@ export default function Home() {
     }, []);
 
     const callback = (key) => {
-
+        setTab(key);
     }
 
     return (
@@ -36,13 +38,13 @@ export default function Home() {
             >
 
                 <TabPane tab="Bản quyền" key="1">
-                    <TabPaneContent tab="1" />
+                    <TabPaneContent tab={tab} />
                 </TabPane>
                 <TabPane tab="Sản xuất" key="2">
-                    <TabPaneContent tab="2" />
+                    <TabPaneContent tab={tab} />
                 </TabPane>
                 <TabPane tab="Đăng tải" key="3">
-                    <TabPaneContent tab="3" />
+                    <TabPaneContent tab={tab} />
                 </TabPane>
             </Tabs>
         </div>

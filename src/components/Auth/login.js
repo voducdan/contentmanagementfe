@@ -78,7 +78,7 @@ export default function Login() {
                         width: '100%',
                     }}
                     name="email"
-                    rules={[{ type: 'email' }, { required: true, message: 'Vui lòng nhập email !' }]}
+                    rules={[{ required: true, message: 'Vui lòng nhập email !' }]}
                 >
                     <Input placeholder='Email' />
                 </Form.Item>
