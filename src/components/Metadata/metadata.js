@@ -114,6 +114,10 @@ export default function Metadata() {
             formData.append("type_of_sale", values.type_of_sale);
             formData.append("vi_name", values.vi_name);
             formData.append("voice_note", values.voice_note);
+            formData.append("release_date", values.release_date);
+            formData.append("post_production_cost", values.post_production_cost);
+            formData.append("control_cost", values.control_cost);
+            formData.append("agency", values.agency);
             formData.append("updated_at", new Date().toISOString());
             const res = await TopicService.update({ data: formData, type: 'metadata' });
             const data = await res.data.data;
@@ -182,7 +186,11 @@ export default function Metadata() {
                             partner_note: topic.partner_note,
                             voice_note: topic.voice_note,
                             contract_note: topic.contract_note,
-                            translation: topic.translation
+                            translation: topic.translation,
+                            agency: topic.agency,
+                            control_cost: topic.control_cost,
+                            post_production_cost: topic.post_production_cost,
+                            release_date: topic.release_date
                         }}
                     >
                         <Row>
@@ -218,13 +226,19 @@ export default function Metadata() {
                                     <Input />
                                 </Form.Item>
                                 <Form.Item colon={false}
+                                    label="Agency"
+                                    name="agency"
+                                >
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item colon={false}
                                     label="Từ khoá gợi nhớ"
                                     name="keywords"
                                 >
                                     <Input placeholder="Mỗi từ khoá cách nhau bằng dấu ','" />
                                 </Form.Item>
                                 <Form.Item colon={false}
-                                    label="Bản dịch"
+                                    label="Cần đối tác dịch"
                                     name="translation"
                                 >
                                     <Select
@@ -334,7 +348,7 @@ export default function Metadata() {
                                                     <Input.TextArea />
                                                 </Form.Item>
                                                 <Form.Item colon={false}
-                                                    label="Lưu ý khác trong HĐ"
+                                                    label="Lưu ý khác"
                                                     name="contract_note"
                                                 >
                                                     <Input.TextArea />
@@ -373,8 +387,26 @@ export default function Metadata() {
                                                     <Input />
                                                 </Form.Item>
                                                 <Form.Item colon={false}
+                                                    label="Phí dò soát"
+                                                    name="control_cost"
+                                                >
+                                                    <Input />
+                                                </Form.Item>
+                                                <Form.Item colon={false}
+                                                    label="Phí hậu kỳ"
+                                                    name="post_production_cost"
+                                                >
+                                                    <Input />
+                                                </Form.Item>
+                                                <Form.Item colon={false}
                                                     label="Mua quyền gì"
                                                     name="buy_permission"
+                                                >
+                                                    <Input />
+                                                </Form.Item>
+                                                <Form.Item colon={false}
+                                                    label="Thời hạn phát hành"
+                                                    name="release_date"
                                                 >
                                                     <Input />
                                                 </Form.Item>

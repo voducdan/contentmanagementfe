@@ -563,7 +563,7 @@ const ProductionTab = () => {
     const [maxStatus, setMaxStatus] = useState({});
 
 
-    const [numOfExpectedDayForm, procudeCostForm] = Form.useForm();
+    const [numOfExpectedDayForm] = Form.useForm();
 
     useEffect(() => {
         const fetchTopics = async () => {
@@ -622,35 +622,50 @@ const ProductionTab = () => {
         const updatedTopic = await res.data.data;
         const copyData = [...topics];
         const updatedTopicIdx = copyData.findIndex(i => i.id === updatedTopic.id);
+        console.log(updatedTopic)
         updatedTopic['key'] = updatedTopic['id'];
         copyData[updatedTopicIdx] = updatedTopic;
         setTopic(copyData);
     }
 
-    const handleMenuClick = (e, id) => {
+    const addTopicToUploadTab = async (status) => {
+        const updatedTopicIdx = topics.findIndex(i => i.id === currentTopic);
+        console.log(topics[updatedTopicIdx])
+        const updatedTopic = { ...topics[updatedTopicIdx] };
+        delete updatedTopic['status'];
+        delete updatedTopic['id'];
+        delete updatedTopic['key'];
+        updatedTopic['tab'] = 3;
+        updatedTopic['status_id'] = status + 1;
+        updatedTopic['created_on_upload_tab'] = new Date().toISOString();
+        await TopicService.create(updatedTopic);
+    }
+
+    const handleMenuClick = async (e, id) => {
         const status = Number(e);
         const prefillExpectedCompletionDay = statuses[statuses.findIndex(i => i.id === e)]['prefill'];
+        setCurrentTopic(id);
+        setCurrentStatus(status);
+        setPrefill(prefillExpectedCompletionDay);
         const topicUpdatedData = {
             id,
             last_modified_status: new Date().toISOString(),
             updated_at: new Date().toISOString()
         };
-        setCurrentTopic(id);
-        setCurrentStatus(status);
-        setPrefill(prefillExpectedCompletionDay);
         if ([14, 15, 16, 17, 18, 19].includes(status)) {
             setOnOpenExpectedDayModal(true);
         }
         else if (status === 20) {
             topicUpdatedData['status_id'] = status;
             topicUpdatedData['completed_produce_at'] = new Date().toISOString();
-            updateTopic(topicUpdatedData);
+            await updateTopic(topicUpdatedData);
+            await addTopicToUploadTab(status);
         }
         else {
             // update topic status
             topicUpdatedData['status_id'] = status;
             topicUpdatedData['completed_produce_at'] = null;
-            updateTopic(topicUpdatedData);
+            await updateTopic(topicUpdatedData);
         }
     }
 
