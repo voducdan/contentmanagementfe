@@ -168,7 +168,7 @@ export default function Metadata() {
                             keywords: topic.keywords,
                             status: topic.status.name,
                             category_level_1: topic.category_level_1,
-                            category_level_2: topic.category_level_2,
+                            category_level_2: topic.category_level_2.split(',').map(Number),
                             description: topic.description,
                             type_of_sale: topic.type_of_sale,
                             contracted_at: topic.contracted_at,
@@ -202,7 +202,6 @@ export default function Metadata() {
                                 <Form.Item colon={false}
                                     label="Tít phụ"
                                     name="short_description"
-                                    rules={[{ required: true, message: 'Vui lòng điền tích phụ' }]}
                                 >
                                     <Input.TextArea />
                                 </Form.Item>
@@ -277,6 +276,7 @@ export default function Metadata() {
                                                 >
                                                     <Select
                                                         allowClear
+                                                        mode="multiple"
                                                     >
                                                         {
                                                             categoriesLevel2.map(i => (
@@ -408,7 +408,6 @@ export default function Metadata() {
                         ]}
                     >
                         {updateTopicMetaErr ? "Cập nhật đề tài không thành công, vui lòng thử lại sau!" : "Cập nhật đề tài thành công!"}
-                        {deleteTopicErr ? "Cập nhật đề tài không thành công, vui lòng thử lại sau!" : "Cập nhật đề tài thành công!"}
                     </Modal>
                     <Modal
                         title={null}

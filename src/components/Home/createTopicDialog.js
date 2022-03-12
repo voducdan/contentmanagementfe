@@ -94,6 +94,13 @@ export default function CreateTopic(props) {
                     <Input />
                 </Form.Item>
                 <Form.Item
+                    label="Agency"
+                    name="agency"
+                    rules={[{ required: true, message: 'Vui lòng điền Agency' }]}
+                >
+                    <Input />
+                </Form.Item>
+                <Form.Item
                     label="Từ khoá gợi nhớ"
                     name="keywords"
                     rules={[{ required: true, message: 'Vui lòng điền từ khoá gợi nhớ' }]}
@@ -101,7 +108,7 @@ export default function CreateTopic(props) {
                     <Input placeholder="Mỗi từ khoá cách nhau bằng dấu ','" />
                 </Form.Item>
                 <Form.Item
-                    label="Bản dịch"
+                    label="Cần đối tác dịch"
                     name="translation"
                     rules={[{ required: true, message: 'Vui lòng chọn bản dịch' }]}
                 >

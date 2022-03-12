@@ -195,7 +195,9 @@ const CopyrightTab = () => {
     const onFinishEnterTopicDetail = async (values) => {
         try {
             const formData = new FormData();
-            formData.append("coverImg", values.coverImg.file);
+            if (values.coverImg && values.coverImg.file) {
+                formData.append("coverImg", values.coverImg.file);
+            }
             formData.append("id", currentTopic);
             formData.append("status_id", currentStatus);
             formData.append("category_level_1", values.categoryLevel1);
@@ -212,6 +214,7 @@ const CopyrightTab = () => {
             formData.append("partner_note", values.partnerNote);
             formData.append("voice_note", values.voiceNote);
             formData.append("contract_note", values.contractNote);
+            formData.append("release_date", values.release_date);
             formData.append("last_modified_status", new Date().toISOString());
             formData.append("completed_at", new Date().toISOString());
             const res = await TopicService.update({ data: formData, type: '' });
@@ -244,13 +247,13 @@ const CopyrightTab = () => {
     const columns = [
         {
             title: 'Tên đề tài',
-            key: 'original_name',
-            dataIndex: ['original_name', 'topic_id'],
-            sorter: (a, b) => a.original_name.localeCompare(b.original_name),
+            key: 'vi_name',
+            dataIndex: ['vi_name', 'topic_id'],
+            sorter: (a, b) => a.vi_name.localeCompare(b.vi_name),
             render: (_, data) => {
                 return (
                     <>
-                        <a href={`/metadata/${data.topic_id}`} target='_blank'>{data.original_name}</a>
+                        <a href={`/metadata/${data.topic_id}`} target='_blank'>{data.vi_name}</a>
                     </>
                 )
             }
@@ -395,6 +398,8 @@ const CopyrightTab = () => {
                                     rules={[{ required: true, message: 'Vui lòng điền category tầng 2' }]}
                                 >
                                     <Select
+                                        mode="multiple"
+                                        defaultValue={[]}
                                         allowClear
                                     >
                                         {
@@ -472,6 +477,12 @@ const CopyrightTab = () => {
                                     <Input />
                                 </Form.Item>
                                 <Form.Item
+                                    label="Thời hạn phát hành"
+                                    name="release_date"
+                                >
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item
                                     label="Ghi chú về đối tác dịch"
                                     name="partnerNote"
                                 >
@@ -484,7 +495,7 @@ const CopyrightTab = () => {
                                     <Input />
                                 </Form.Item>
                                 <Form.Item
-                                    label="Lưu ý khác trong HĐ"
+                                    label="Lưu ý khác"
                                     name="contractNote"
                                 >
                                     <Input />
@@ -547,7 +558,6 @@ const ProductionTab = () => {
     const [currentTopic, setCurrentTopic] = useState(null);
     const [currentStatus, setCurrentStatus] = useState(null);
     const [onOpenExpectedDayModal, setOnOpenExpectedDayModal] = useState(false);
-    const [onOpenProduceCost, setOnOpenProduceCost] = useState(false);
     const [filteredStatus, setFilteredStatus] = useState([]);
     const [isUnauthen, setIsUnauthen] = useState(false);
     const [maxStatus, setMaxStatus] = useState({});
@@ -629,12 +639,12 @@ const ProductionTab = () => {
         setCurrentStatus(status);
         setPrefill(prefillExpectedCompletionDay);
         if ([14, 15, 16, 17, 18, 19].includes(status)) {
-            // handle pop up to fill reason of canceling
             setOnOpenExpectedDayModal(true);
         }
         else if (status === 20) {
-            // handle pop up to fill topic detail
-            setOnOpenProduceCost(true);
+            topicUpdatedData['status_id'] = status;
+            topicUpdatedData['completed_produce_at'] = new Date().toISOString();
+            updateTopic(topicUpdatedData);
         }
         else {
             // update topic status
@@ -667,27 +677,6 @@ const ProductionTab = () => {
         setOnOpenExpectedDayModal(false);
     }
 
-    const onFinishEnterProduceCost = async (values) => {
-        const body = values;
-        const topicUpdatedData = {
-            id: currentTopic,
-            status_id: currentStatus,
-            last_modified_status: new Date().toISOString(),
-            completed_produce_at: new Date().toISOString(),
-            produce_cost: body['produce_cost']
-        };
-        updateTopic(topicUpdatedData);
-        const updatedTopicIdx = topics.findIndex(i => i.id === currentTopic);
-        const updatedTopic = { ...topics[updatedTopicIdx] };
-        delete updatedTopic['status'];
-        delete updatedTopic['id'];
-        updatedTopic['tab'] = 3;
-        updatedTopic['status_id'] = currentStatus + 1;
-        updatedTopic['created_on_upload_tab'] = new Date().toISOString();
-        await TopicService.create(updatedTopic);
-        setOnOpenProduceCost(false);
-    }
-
     const StatusMenu = ({ id, status, disabled }) => {
         return (
             <Select disabled={disabled} className='status-menu-select' defaultValue={status} onChange={(e) => { handleMenuClick(e, id) }}>
@@ -703,13 +692,13 @@ const ProductionTab = () => {
     const columns = [
         {
             title: 'Tên đề tài',
-            key: 'original_name',
-            dataIndex: ['original_name', 'topic_id'],
-            sorter: (a, b) => a.original_name.localeCompare(b.original_name),
+            key: 'vi_name',
+            dataIndex: ['vi_name', 'topic_id'],
+            sorter: (a, b) => a.vi_name.localeCompare(b.vi_name),
             render: (_, data) => {
                 return (
                     <>
-                        <a href={`/metadata/${data.topic_id}`} target='_blank'>{data.original_name}</a>
+                        <a href={`/metadata/${data.topic_id}`} target='_blank'>{data.vi_name}</a>
                     </>
                 )
             }
@@ -827,37 +816,6 @@ const ProductionTab = () => {
                                 </Button>
                             </Form>
                         </Modal>
-                        <Modal
-                            title="Phí sản xuất"
-                            visible={onOpenProduceCost}
-                            onCancel={() => { setOnOpenProduceCost(false) }}
-                            footer={null}
-                        >
-                            <Form
-                                name="numOfExpectedDayForm"
-                                form={procudeCostForm}
-                                onFinish={onFinishEnterProduceCost}
-                                autoComplete="off"
-                            >
-                                <Form.Item
-                                    label='Phí sản xuất'
-                                    name="produce_cost"
-                                    rules={[{ required: true, message: 'Vui lòng điền phí sản xuất' }]}
-                                >
-                                    <Input />
-                                </Form.Item>
-                                <Button key="back" onClick={() => { setOnOpenProduceCost(false) }}>
-                                    Thoát
-                                </Button>,
-                                <Button
-                                    key="submit"
-                                    htmlType="submit"
-                                    type="primary"
-                                >
-                                    Lưu
-                                </Button>
-                            </Form>
-                        </Modal>
                         <Table className='topic-table' columns={columns} dataSource={topics} />
                     </div>
                 )
@@ -881,6 +839,26 @@ const UploadTab = () => {
     const [statuses, setStatuses] = useState([]);
     const [isUnauthen, setIsUnauthen] = useState(false);
     const [filteredStatus, setFilteredStatus] = useState([]);
+    const [currentTopic, setCurrentTopic] = useState(null);
+    const [currentStatus, setCurrentStatus] = useState(null);
+    const [onOpenProduceCost, setOnOpenProduceCost] = useState(false);
+
+    const [procudeCostForm] = Form.useForm();
+
+    const onFinishEnterProduceCost = async (values) => {
+        const body = values;
+        const topicUpdatedData = {
+            id: currentTopic,
+            status_id: currentStatus,
+            last_modified_status: new Date().toISOString(),
+            completed_upload_at: new Date().toISOString(),
+            produce_cost: body['produce_cost'],
+            control_cost: body['control_cost'],
+            post_production_cost: body['post_production_cost']
+        };
+        updateTopic(topicUpdatedData);
+        setOnOpenProduceCost(false);
+    }
 
     useEffect(() => {
         const fetchTopics = async () => {
@@ -939,16 +917,17 @@ const UploadTab = () => {
             last_modified_status: new Date().toISOString(),
             updated_at: new Date().toISOString()
         };
+        setCurrentTopic(id);
+        setCurrentStatus(status);
         if (status === 25) {
-            // handle pop up to fill topic detail
-            topicUpdatedData['completed_upload_at'] = new Date().toISOString();
+            setOnOpenProduceCost(true);
         } else {
             topicUpdatedData['completed_upload_at'] = null;
+            updateTopic(topicUpdatedData);
         }
-        updateTopic(topicUpdatedData);
     }
 
-    const StatusMenu = ({ id, status, disabled }) => {
+    const StatusMenu = ({ id, status }) => {
         return (
             <Select className='status-menu-select' defaultValue={status} onChange={(e) => { handleMenuClick(e, id) }}>
                 {
@@ -963,13 +942,13 @@ const UploadTab = () => {
     const columns = [
         {
             title: 'Tên đề tài',
-            key: 'original_name',
-            dataIndex: ['original_name', 'topic_id'],
-            sorter: (a, b) => a.original_name.localeCompare(b.original_name),
+            key: 'vi_name',
+            dataIndex: ['vi_name', 'topic_id'],
+            sorter: (a, b) => a.vi_name.localeCompare(b.vi_name),
             render: (_, data) => {
                 return (
                     <>
-                        <a href={`/metadata/${data.topic_id}`} target='_blank'>{data.original_name}</a>
+                        <a href={`/metadata/${data.topic_id}`} target='_blank'>{data.vi_name}</a>
                     </>
                 )
             }
@@ -1043,6 +1022,51 @@ const UploadTab = () => {
     return (
 
         <div>
+            <Modal
+                title="Phí sản xuất"
+                visible={onOpenProduceCost}
+                onCancel={() => { setOnOpenProduceCost(false) }}
+                footer={null}
+            >
+                <Form
+                    name="numOfExpectedDayForm"
+                    form={procudeCostForm}
+                    onFinish={onFinishEnterProduceCost}
+                    autoComplete="off"
+                >
+                    <Form.Item
+                        label='Phí sản xuất'
+                        name="produce_cost"
+                        rules={[{ required: true, message: 'Vui lòng điền phí sản xuất' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        label='Phí dò soát'
+                        name="control_cost"
+                        rules={[{ required: true, message: 'Vui lòng điền phí dò soát' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        label='Phí hậu kỳ'
+                        name="post_production_cost"
+                        rules={[{ required: true, message: 'Vui lòng điền phí hậu kỳ' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Button key="back" onClick={() => { setOnOpenProduceCost(false) }}>
+                        Thoát
+                    </Button>,
+                    <Button
+                        key="submit"
+                        htmlType="submit"
+                        type="primary"
+                    >
+                        Lưu
+                    </Button>
+                </Form>
+            </Modal>
             {
                 (!isUnauthen) && (
 
