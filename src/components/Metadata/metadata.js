@@ -172,7 +172,7 @@ export default function Metadata() {
                             keywords: topic.keywords,
                             status: topic.status.name,
                             category_level_1: topic.category_level_1,
-                            category_level_2: topic.category_level_2.split(',').map(Number),
+                            category_level_2: topic.category_level_2 ? topic.category_level_2.split(',').map(Number) : topic.category_level_2,
                             description: topic.description,
                             type_of_sale: topic.type_of_sale,
                             contracted_at: topic.contracted_at,
