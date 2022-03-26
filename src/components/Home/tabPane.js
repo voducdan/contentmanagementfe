@@ -264,6 +264,7 @@ const CopyrightTab = () => {
             dataIndex: ['status', 'translation'],
             filters: filteredStatus,
             onFilter: (value, record) => record.status.id === value,
+            sorter: (a, b) => a.status.name.localeCompare(b.status.name),
             render: (_, data) => {
                 return (
                     <>
@@ -724,6 +725,7 @@ const ProductionTab = () => {
             dataIndex: ['status', 'translation'],
             filters: filteredStatus,
             onFilter: (value, record) => record.status.id === value,
+            sorter: (a, b) => a.status.name.localeCompare(b.status.name),
             render: (_, data) => {
                 return (
                     <>
@@ -974,6 +976,7 @@ const UploadTab = () => {
             dataIndex: ['status', 'translation'],
             filters: filteredStatus,
             onFilter: (value, record) => record.status.id === value,
+            sorter: (a, b) => a.status.name.localeCompare(b.status.name),
             render: (_, data) => {
                 return (
                     <>
