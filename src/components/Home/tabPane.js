@@ -198,23 +198,23 @@ const CopyrightTab = () => {
             if (values.coverImg && values.coverImg.file) {
                 formData.append("coverImg", values.coverImg.file);
             }
-            formData.append("id", currentTopic);
+            formData.append("id", currentTopic || null);
             formData.append("status_id", currentStatus);
-            formData.append("category_level_1", values.categoryLevel1);
-            formData.append("category_level_2", values.categoryLevel2);
-            formData.append("description", values.description);
-            formData.append("type_of_sale", values.typeOfSale);
-            formData.append("contracted_at", values.contractedAt);
-            formData.append("contract_term", values.contractTerm);
-            formData.append("cover_price", values.coverPrice);
-            formData.append("royalty", values.royalty);
-            formData.append("copyright_price", values.copyrightPrice);
-            formData.append("translation_cost", values.translationCost);
-            formData.append("buy_permission", values.buyPermission);
-            formData.append("partner_note", values.partnerNote);
-            formData.append("voice_note", values.voiceNote);
-            formData.append("contract_note", values.contractNote);
-            formData.append("release_date", values.release_date);
+            formData.append("category_level_1", values.categoryLevel1 || null);
+            formData.append("category_level_2", values.categoryLevel2 || null);
+            formData.append("description", values.description || null);
+            formData.append("type_of_sale", values.typeOfSale || null);
+            formData.append("contracted_at", values.contractedAt || null);
+            formData.append("contract_term", values.contractTerm || null);
+            formData.append("cover_price", values.coverPrice || null);
+            formData.append("royalty", values.royalty || null);
+            formData.append("copyright_price", values.copyrightPrice || null);
+            formData.append("translation_cost", values.translationCost || null);
+            formData.append("buy_permission", values.buyPermission || null);
+            formData.append("partner_note", values.partnerNote || null);
+            formData.append("voice_note", values.voiceNote || null);
+            formData.append("contract_note", values.contractNote || null);
+            formData.append("release_date", values.release_date || null);
             formData.append("last_modified_status", new Date().toISOString());
             formData.append("completed_at", new Date().toISOString());
             const res = await TopicService.update({ data: formData, type: '' });
@@ -380,7 +380,7 @@ const CopyrightTab = () => {
                                 <Form.Item
                                     label="Category tầng 1"
                                     name="categoryLevel1"
-                                    rules={[{ required: true, message: 'Vui lòng điền category tầng 1' }]}
+                                    // rules={[{ required: true, message: 'Vui lòng điền category tầng 1' }]}
                                 >
                                     <Select
                                         allowClear
@@ -396,7 +396,7 @@ const CopyrightTab = () => {
                                 <Form.Item
                                     label="Category tầng 2"
                                     name="categoryLevel2"
-                                    rules={[{ required: true, message: 'Vui lòng điền category tầng 2' }]}
+                                    // rules={[{ required: true, message: 'Vui lòng điền category tầng 2' }]}
                                 >
                                     <Select
                                         mode="multiple"
@@ -413,14 +413,14 @@ const CopyrightTab = () => {
                                 <Form.Item
                                     label="Mô tả playlist"
                                     name="description"
-                                    rules={[{ required: true, message: 'Vui lòng điền mô tả playlist' }]}
+                                    // rules={[{ required: true, message: 'Vui lòng điền mô tả playlist' }]}
                                 >
                                     <Input.TextArea />
                                 </Form.Item>
                                 <Form.Item
                                     label="Kinh doanh"
                                     name="typeOfSale"
-                                    rules={[{ required: true, message: 'Vui lòng điền kinh doanh' }]}
+                                    // rules={[{ required: true, message: 'Vui lòng điền kinh doanh' }]}
                                 >
                                     <Select
                                         allowClear
@@ -433,35 +433,35 @@ const CopyrightTab = () => {
                                 <Form.Item
                                     label="Ngày ký HĐ"
                                     name="contractedAt"
-                                    rules={[{ required: true, message: 'Vui lòng điền ngày ký HĐ' }]}
+                                    // rules={[{ required: true, message: 'Vui lòng điền ngày ký HĐ' }]}
                                 >
                                     <Input placeholder="DD/MM/YYYY" />
                                 </Form.Item>
                                 <Form.Item
                                     label="Thời hạn HĐ"
                                     name="contractTerm"
-                                    rules={[{ required: true, message: 'Vui lòng điền thời hạn HĐ' }]}
+                                    // rules={[{ required: true, message: 'Vui lòng điền thời hạn HĐ' }]}
                                 >
                                     <Input />
                                 </Form.Item>
                                 <Form.Item
                                     label="Giá bìa"
                                     name="coverPrice"
-                                    rules={[{ required: true, message: 'Vui lòng điền giá bìa' }]}
+                                    // rules={[{ required: true, message: 'Vui lòng điền giá bìa' }]}
                                 >
                                     <Input />
                                 </Form.Item>
                                 <Form.Item
                                     label="Royalty"
                                     name="royalty"
-                                    rules={[{ required: true, message: 'Vui lòng điền royalty' }]}
+                                    // rules={[{ required: true, message: 'Vui lòng điền royalty' }]}
                                 >
                                     <Input />
                                 </Form.Item>
                                 <Form.Item
                                     label="Phí BQ"
                                     name="copyrightPrice"
-                                    rules={[{ required: true, message: 'Vui lòng điền phí BQ' }]}
+                                    // rules={[{ required: true, message: 'Vui lòng điền phí BQ' }]}
                                 >
                                     <Input />
                                 </Form.Item>
@@ -817,7 +817,7 @@ const ProductionTab = () => {
                                 <Form.Item
                                     label='Số ngày dự kiến hoàn tất'
                                     name="expected_completetion_day"
-                                    rules={[{ required: true, message: 'Vui lòng điền số ngày dự kiến hoàn tất' }]}
+                                    // rules={[{ required: true, message: 'Vui lòng điền số ngày dự kiến hoàn tất' }]}
                                 >
                                     <Input />
                                 </Form.Item>
