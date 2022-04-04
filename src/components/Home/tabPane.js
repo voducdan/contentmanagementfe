@@ -36,6 +36,7 @@ const CopyrightTab = () => {
     const [categoriesLevel1, setCategoriesLevel1] = useState([]);
     const [categoriesLevel2, setCategoriesLevel2] = useState([]);
     const [filteredStatus, setFilteredStatus] = useState([]);
+    const [filterTopicName, setFilterTopicName] = useState([]);
     const [isUnauthen, setIsUnauthen] = useState(false);
     const [maxStatus, setMaxStatus] = useState({});
     const [updateTopicDetailForm] = Form.useForm();
@@ -83,6 +84,12 @@ const CopyrightTab = () => {
             value: i.status.id,
             text: i.status.name
         }));
+        const topicFiltered = topics.map(i => ({
+            value: i.id,
+            text: i.vi_name
+        }));
+        const distinctTopicName = [...new Map(topicFiltered.map(i => [i['value'], i])).values()];
+        setFilterTopicName(distinctTopicName);
         const distinctTopicStatus = [...new Map(topicStatus.map(i => [i['value'], i])).values()];
         setFilteredStatus(distinctTopicStatus);
     }, [topics]);
@@ -249,6 +256,8 @@ const CopyrightTab = () => {
             title: 'Tên đề tài',
             key: 'vi_name',
             dataIndex: ['vi_name', 'topic_id'],
+            filters: filterTopicName,
+            onFilter: (value, record) => record.id === value,
             sorter: (a, b) => a.vi_name.localeCompare(b.vi_name),
             render: (_, data) => {
                 return (
@@ -560,6 +569,7 @@ const ProductionTab = () => {
     const [currentStatus, setCurrentStatus] = useState(null);
     const [onOpenExpectedDayModal, setOnOpenExpectedDayModal] = useState(false);
     const [filteredStatus, setFilteredStatus] = useState([]);
+    const [filterTopicName, setFilterTopicName] = useState([]);
     const [isUnauthen, setIsUnauthen] = useState(false);
     const [maxStatus, setMaxStatus] = useState({});
 
@@ -610,6 +620,12 @@ const ProductionTab = () => {
         }
 
         fetcNextTabStatus();
+        const topicFiltered = topics.map(i => ({
+            value: i.id,
+            text: i.vi_name
+        }));
+        const distinctTopicName = [...new Map(topicFiltered.map(i => [i['value'], i])).values()];
+        setFilterTopicName(distinctTopicName);
         const topicStatus = topics.map(i => ({
             value: i.status.id,
             text: i.status.name
@@ -710,6 +726,8 @@ const ProductionTab = () => {
             title: 'Tên đề tài',
             key: 'vi_name',
             dataIndex: ['vi_name', 'topic_id'],
+            filters: filterTopicName,
+            onFilter: (value, record) => record.id === value,
             sorter: (a, b) => a.vi_name.localeCompare(b.vi_name),
             render: (_, data) => {
                 return (
@@ -856,6 +874,7 @@ const UploadTab = () => {
     const [statuses, setStatuses] = useState([]);
     const [isUnauthen, setIsUnauthen] = useState(false);
     const [filteredStatus, setFilteredStatus] = useState([]);
+    const [filterTopicName, setFilterTopicName] = useState([]);
     const [currentTopic, setCurrentTopic] = useState(null);
     const [currentStatus, setCurrentStatus] = useState(null);
     const [onOpenProduceCost, setOnOpenProduceCost] = useState(false);
@@ -908,6 +927,12 @@ const UploadTab = () => {
     }, []);
 
     useEffect(() => {
+        const topicFiltered = topics.map(i => ({
+            value: i.id,
+            text: i.vi_name
+        }));
+        const distinctTopicName = [...new Map(topicFiltered.map(i => [i['value'], i])).values()];
+        setFilterTopicName(distinctTopicName);
         const topicStatus = topics.map(i => ({
             value: i.status.id,
             text: i.status.name
@@ -961,6 +986,8 @@ const UploadTab = () => {
             title: 'Tên đề tài',
             key: 'vi_name',
             dataIndex: ['vi_name', 'topic_id'],
+            filters: filterTopicName,
+            onFilter: (value, record) => record.id === value,
             sorter: (a, b) => a.vi_name.localeCompare(b.vi_name),
             render: (_, data) => {
                 return (
