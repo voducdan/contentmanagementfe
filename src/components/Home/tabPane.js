@@ -257,6 +257,7 @@ const CopyrightTab = () => {
             key: 'vi_name',
             dataIndex: ['vi_name', 'topic_id'],
             filters: filterTopicName,
+            filterSearch: true,
             onFilter: (value, record) => record.id === value,
             sorter: (a, b) => a.vi_name.localeCompare(b.vi_name),
             render: (_, data) => {
@@ -389,7 +390,7 @@ const CopyrightTab = () => {
                                 <Form.Item
                                     label="Category tầng 1"
                                     name="categoryLevel1"
-                                    // rules={[{ required: true, message: 'Vui lòng điền category tầng 1' }]}
+                                // rules={[{ required: true, message: 'Vui lòng điền category tầng 1' }]}
                                 >
                                     <Select
                                         allowClear
@@ -405,7 +406,7 @@ const CopyrightTab = () => {
                                 <Form.Item
                                     label="Category tầng 2"
                                     name="categoryLevel2"
-                                    // rules={[{ required: true, message: 'Vui lòng điền category tầng 2' }]}
+                                // rules={[{ required: true, message: 'Vui lòng điền category tầng 2' }]}
                                 >
                                     <Select
                                         mode="multiple"
@@ -422,14 +423,14 @@ const CopyrightTab = () => {
                                 <Form.Item
                                     label="Mô tả playlist"
                                     name="description"
-                                    // rules={[{ required: true, message: 'Vui lòng điền mô tả playlist' }]}
+                                // rules={[{ required: true, message: 'Vui lòng điền mô tả playlist' }]}
                                 >
                                     <Input.TextArea />
                                 </Form.Item>
                                 <Form.Item
                                     label="Kinh doanh"
                                     name="typeOfSale"
-                                    // rules={[{ required: true, message: 'Vui lòng điền kinh doanh' }]}
+                                // rules={[{ required: true, message: 'Vui lòng điền kinh doanh' }]}
                                 >
                                     <Select
                                         allowClear
@@ -442,35 +443,35 @@ const CopyrightTab = () => {
                                 <Form.Item
                                     label="Ngày ký HĐ"
                                     name="contractedAt"
-                                    // rules={[{ required: true, message: 'Vui lòng điền ngày ký HĐ' }]}
+                                // rules={[{ required: true, message: 'Vui lòng điền ngày ký HĐ' }]}
                                 >
-                                    <Input placeholder="DD/MM/YYYY" />
+                                    <Input />
                                 </Form.Item>
                                 <Form.Item
                                     label="Thời hạn HĐ"
                                     name="contractTerm"
-                                    // rules={[{ required: true, message: 'Vui lòng điền thời hạn HĐ' }]}
+                                // rules={[{ required: true, message: 'Vui lòng điền thời hạn HĐ' }]}
                                 >
                                     <Input />
                                 </Form.Item>
                                 <Form.Item
                                     label="Giá bìa"
                                     name="coverPrice"
-                                    // rules={[{ required: true, message: 'Vui lòng điền giá bìa' }]}
+                                // rules={[{ required: true, message: 'Vui lòng điền giá bìa' }]}
                                 >
                                     <Input />
                                 </Form.Item>
                                 <Form.Item
                                     label="Royalty"
                                     name="royalty"
-                                    // rules={[{ required: true, message: 'Vui lòng điền royalty' }]}
+                                // rules={[{ required: true, message: 'Vui lòng điền royalty' }]}
                                 >
                                     <Input />
                                 </Form.Item>
                                 <Form.Item
                                     label="Phí BQ"
                                     name="copyrightPrice"
-                                    // rules={[{ required: true, message: 'Vui lòng điền phí BQ' }]}
+                                // rules={[{ required: true, message: 'Vui lòng điền phí BQ' }]}
                                 >
                                     <Input />
                                 </Form.Item>
@@ -639,7 +640,6 @@ const ProductionTab = () => {
         const updatedTopic = await res.data.data;
         const copyData = [...topics];
         const updatedTopicIdx = copyData.findIndex(i => i.id === updatedTopic.id);
-        console.log(updatedTopic)
         updatedTopic['key'] = updatedTopic['id'];
         copyData[updatedTopicIdx] = updatedTopic;
         setTopic(copyData);
@@ -727,6 +727,7 @@ const ProductionTab = () => {
             key: 'vi_name',
             dataIndex: ['vi_name', 'topic_id'],
             filters: filterTopicName,
+            filterSearch: true,
             onFilter: (value, record) => record.id === value,
             sorter: (a, b) => a.vi_name.localeCompare(b.vi_name),
             render: (_, data) => {
@@ -835,7 +836,7 @@ const ProductionTab = () => {
                                 <Form.Item
                                     label='Số ngày dự kiến hoàn tất'
                                     name="expected_completetion_day"
-                                    // rules={[{ required: true, message: 'Vui lòng điền số ngày dự kiến hoàn tất' }]}
+                                // rules={[{ required: true, message: 'Vui lòng điền số ngày dự kiến hoàn tất' }]}
                                 >
                                     <Input />
                                 </Form.Item>
@@ -987,6 +988,7 @@ const UploadTab = () => {
             key: 'vi_name',
             dataIndex: ['vi_name', 'topic_id'],
             filters: filterTopicName,
+            filterSearch: true,
             onFilter: (value, record) => record.id === value,
             sorter: (a, b) => a.vi_name.localeCompare(b.vi_name),
             render: (_, data) => {

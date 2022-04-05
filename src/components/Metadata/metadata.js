@@ -118,6 +118,7 @@ export default function Metadata() {
             formData.append("post_production_cost", values.post_production_cost);
             formData.append("control_cost", values.control_cost);
             formData.append("agency", values.agency);
+            formData.append("copyright_price", values.copyright_price);
             formData.append("updated_at", new Date().toISOString());
             const res = await TopicService.update({ data: formData, type: 'metadata' });
             const data = await res.data.data;
@@ -375,8 +376,8 @@ export default function Metadata() {
                                                     <Input />
                                                 </Form.Item>
                                                 <Form.Item colon={false}
-                                                    label="copyright_price BQ"
-                                                    name="keywords"
+                                                    label="Phí BQ"
+                                                    name="copyright_price"
                                                 >
                                                     <Input />
                                                 </Form.Item>
