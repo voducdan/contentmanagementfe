@@ -1,50 +1,63 @@
 .create-topic-btn-container {
     text-align: left;
 }
-.ant-form-item-label {
-    white-space: normal!important;
+
+.create-topic-btn-container button {
+    margin-bottom: 20px;
 }
+
+.ant-form-item-label {
+    white-space: normal !important;
+}
+
 .status-menu-select .ant-select-selector {
-    background-color: #bcdaf5!important;
-  }
+    background-color: #bcdaf5 !important;
+}
+
+.topic-table {
+    margin-bottom: 100px;
+}
 
 .topic-table .ant-table {
-    background-color: rgb(41, 43, 50)!important;
-    color: white!important;
-}
-.topic-table .ant-table-thead > tr > th {
-    background-color: rgb(41, 43, 50)!important;
-    color: white!important;
-}
-.topic-table .ant-empty-description {
-    color: white!important;
+    background-color: rgb(41, 43, 50) !important;
+    color: white !important;
 }
 
-.topic-table .ant-table-tbody > tr.ant-table-placeholder:hover > td {
+.topic-table .ant-table-thead>tr>th {
+    background-color: rgb(41, 43, 50) !important;
+    color: white !important;
+}
+
+.topic-table .ant-empty-description {
+    color: white !important;
+}
+
+.topic-table .ant-table-tbody>tr.ant-table-placeholder:hover>td {
     background: none;
 }
 
-.topic-table .ant-table-tbody > tr > td.ant-table-cell-row-hover{
-    background: rgb(55, 57, 68)!important;
+.topic-table .ant-table-tbody>tr>td.ant-table-cell-row-hover {
+    background: rgb(55, 57, 68) !important;
 }
 
 .topic-tab .ant-table-column-sort {
-    background: rgb(41, 43, 50)!important;
+    background: rgb(41, 43, 50) !important;
 }
 
 .topic-tab .ant-tabs-tab {
-    background-color: rgb(55, 57, 68)!important;
-    border: none!important;
-    color:rgb(172, 172, 172);
+    background-color: rgb(55, 57, 68) !important;
+    border: none !important;
+    color: rgb(172, 172, 172);
 }
+
 .topic-tab .ant-tabs-tab-active .ant-tabs-tab-btn {
-    color:white!important
+    color: white !important
 }
 
-.topic-tab .ant-tabs-top > .ant-tabs-nav::before {
-    border-bottom: none!important;
+.topic-tab .ant-tabs-top>.ant-tabs-nav::before {
+    border-bottom: none !important;
 }
 
-.topic-tab div.ant-tabs-nav::before{
+.topic-tab div.ant-tabs-nav::before {
     border: none;
 }

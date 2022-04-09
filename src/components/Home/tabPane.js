@@ -27,6 +27,9 @@ const { Option } = Select;
 const CopyrightTab = () => {
 
     const [topics, setTopic] = useState([]);
+    const [topicsStatusGroup1, setTopicsStatusGroup1] = useState([]);
+    const [topicsStatusGroup2, setTopicsStatusGroup2] = useState([]);
+    const [topicsStatusGroup3, setTopicsStatusGroup3] = useState([]);
     const [statuses, setStatuses] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [openReasonModal, setOpenReasonModal] = useState(false);
@@ -80,6 +83,13 @@ const CopyrightTab = () => {
         }
 
         fetchNextTabStatus();
+        console.log(topics)
+        const topicGroup1 = topics.filter(i => [1, 2].includes(i.status.id));
+        const topicGroup2 = topics.filter(i => ![10, 11, 12, 1, 2].includes(i.status.id));
+        const topicGroup3 = topics.filter(i => [10, 11, 12].includes(i.status.id));
+        setTopicsStatusGroup1([...topicGroup1]);
+        setTopicsStatusGroup2([...topicGroup2]);
+        setTopicsStatusGroup3([...topicGroup3]);
         const topicStatus = topics.map(i => ({
             value: i.status.id,
             text: i.status.name
@@ -543,7 +553,24 @@ const CopyrightTab = () => {
                                 setIsModalVisible={setIsModalVisible}
                                 appendTopic={appendTopic}
                             />
-                            <Table className='topic-table' columns={columns} dataSource={topics} />
+                            <Table
+                                className='topic-table topic-table-gr1'
+                                columns={columns}
+                                dataSource={topicsStatusGroup1}
+                                pagination={{ defaultPageSize: 5 }}
+                            />
+                            <Table
+                                className='topic-table topic-table-gr2'
+                                columns={columns}
+                                dataSource={topicsStatusGroup2}
+                                pagination={{ defaultPageSize: 10 }}
+                            />
+                            <Table
+                                className='topic-table topic-table-gr3'
+                                columns={columns}
+                                dataSource={topicsStatusGroup3}
+                                pagination={{ defaultPageSize: 10 }}
+                            />
                         </div>
                     </div>
                 )
