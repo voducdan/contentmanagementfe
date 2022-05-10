@@ -7,7 +7,7 @@
     ```npm i```
 * Start server
         ``` npm start```
-* Build
+* Build \
     > **Change REACT_APP_API_BASE_URL in ```.env``` file to http://54.251.84.14**
         
     ``` npm run build```
