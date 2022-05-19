@@ -83,7 +83,6 @@ const CopyrightTab = () => {
         }
 
         fetchNextTabStatus();
-        console.log(topics)
         const topicGroup1 = topics.filter(i => [1, 2].includes(i.status.id));
         const topicGroup2 = topics.filter(i => ![10, 11, 12, 1, 2].includes(i.status.id));
         const topicGroup3 = topics.filter(i => [10, 11, 12].includes(i.status.id));
@@ -400,7 +399,7 @@ const CopyrightTab = () => {
                                 <Form.Item
                                     label="Category tầng 1"
                                     name="categoryLevel1"
-                                // rules={[{ required: true, message: 'Vui lòng điền category tầng 1' }]}
+                                rules={[{ required: true, message: 'Vui lòng điền category tầng 1' }]}
                                 >
                                     <Select
                                         allowClear
@@ -416,7 +415,7 @@ const CopyrightTab = () => {
                                 <Form.Item
                                     label="Category tầng 2"
                                     name="categoryLevel2"
-                                // rules={[{ required: true, message: 'Vui lòng điền category tầng 2' }]}
+                                rules={[{ required: true, message: 'Vui lòng điền category tầng 2' }]}
                                 >
                                     <Select
                                         mode="multiple"
@@ -433,14 +432,14 @@ const CopyrightTab = () => {
                                 <Form.Item
                                     label="Mô tả playlist"
                                     name="description"
-                                // rules={[{ required: true, message: 'Vui lòng điền mô tả playlist' }]}
+                                rules={[{ required: true, message: 'Vui lòng điền mô tả playlist' }]}
                                 >
                                     <Input.TextArea />
                                 </Form.Item>
                                 <Form.Item
                                     label="Kinh doanh"
                                     name="typeOfSale"
-                                // rules={[{ required: true, message: 'Vui lòng điền kinh doanh' }]}
+                                rules={[{ required: true, message: 'Vui lòng điền kinh doanh' }]}
                                 >
                                     <Select
                                         allowClear
@@ -453,35 +452,35 @@ const CopyrightTab = () => {
                                 <Form.Item
                                     label="Ngày ký HĐ"
                                     name="contractedAt"
-                                // rules={[{ required: true, message: 'Vui lòng điền ngày ký HĐ' }]}
+                                rules={[{ required: true, message: 'Vui lòng điền ngày ký HĐ' }]}
                                 >
                                     <Input />
                                 </Form.Item>
                                 <Form.Item
                                     label="Thời hạn HĐ"
                                     name="contractTerm"
-                                // rules={[{ required: true, message: 'Vui lòng điền thời hạn HĐ' }]}
+                                rules={[{ required: true, message: 'Vui lòng điền thời hạn HĐ' }]}
                                 >
                                     <Input />
                                 </Form.Item>
                                 <Form.Item
                                     label="Giá bìa"
                                     name="coverPrice"
-                                // rules={[{ required: true, message: 'Vui lòng điền giá bìa' }]}
+                                rules={[{ required: true, message: 'Vui lòng điền giá bìa' }]}
                                 >
                                     <Input />
                                 </Form.Item>
                                 <Form.Item
                                     label="Royalty"
                                     name="royalty"
-                                // rules={[{ required: true, message: 'Vui lòng điền royalty' }]}
+                                rules={[{ required: true, message: 'Vui lòng điền royalty' }]}
                                 >
                                     <Input />
                                 </Form.Item>
                                 <Form.Item
                                     label="Phí BQ"
                                     name="copyrightPrice"
-                                // rules={[{ required: true, message: 'Vui lòng điền phí BQ' }]}
+                                rules={[{ required: true, message: 'Vui lòng điền phí BQ' }]}
                                 >
                                     <Input />
                                 </Form.Item>
@@ -863,7 +862,7 @@ const ProductionTab = () => {
                                 <Form.Item
                                     label='Số ngày dự kiến hoàn tất'
                                     name="expected_completetion_day"
-                                // rules={[{ required: true, message: 'Vui lòng điền số ngày dự kiến hoàn tất' }]}
+                                rules={[{ required: true, message: 'Vui lòng điền số ngày dự kiến hoàn tất' }]}
                                 >
                                     <Input />
                                 </Form.Item>
